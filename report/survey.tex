@@ -1,0 +1,26 @@
+\section{Exact distance oracles}
+dkosapkdpa
+
+\section{Approximate distance oracles}
+Hermelin et al. \cite{hermelin2011distance} proposed several results for approximate
+distance oracles. In the first result, they give a vertex-labeled distance oracle of
+expected size $O(kn^{1+1/k})$ with a stretch of $(4k-5)$ and query time $O(k)$. This can
+be constructed in $O(kmn^{1/k})$ time. The data structure is an adaption of Thorup and
+Zwick's distance oracle \cite{thorup2005approximate}. Given some $k$, we construct the
+$k$ sets $V=A_{k}\subseteq A_{k-1} \subseteq \dots \subseteq A_0$. \\
+In another result, they give a distance oracle which depend on both $n$ and $\ell$. This has
+expected size $O(knl^{1/k})$ with query time $O(k)$, but with an exponential stretch of
+$(2^k-1)$. This is constructed in $O(kmn^{k/(2k-1)})$. \\
+In their third result, they give an oracle capable of handling label changes. This has
+expected space $O(kn^{1+1/k})$, stretch $(2\cdot3^{k-1}+1)$, query time $O(k)$ and
+handles label changes in $O(kn^{1/k}\lg \lg n)$. \\
+TODO: Short description on approach. Detailed if we use the ideas. \\
+\\
+Chechik \cite{chechik2012improved} improved the latter two results. Namely, he managed to
+reduce stretch from exponential down to polynomial. He showed how to construct a distance oracle
+of size $O(kn\ell^{1/k})$, stretch $(4k-5)$  and query time $O(k)$, which can be
+constructed in $O(m\cdot \min\{n^{k/(2k-1)}, \ell\})$. \\
+He also improved a dynbamic vertex-labeled distance oracle capable of handling label changes in
+$\tilde{O}(n^{1/k})$ time with stretch $(4k-5)$. He also slightly improved space to
+$\tilde{O}(n^{1+1/k})$. \\
+TODO: Short description on approach. Detailed if we use the ideas.

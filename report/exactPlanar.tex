@@ -1,0 +1,53 @@
+\section{Exact Oracles in Directed Planar Graphs}
+\label{sec:sota}
+Previous works have given exact distance oracles for directed planar graphs of size
+$O(n^{5/3})$ with query time $O(\lg n)$ \cite{cohen2017fast}. This was improved recently
+to use $O(n^{3/2})$ space \cite{gawrychowski2017better}. TODO: Other results. \\
+\\
+We cannot directly adapt the approach used in \cite{cohen2017fast} and \cite{gawrychowski2017better} to work
+for the vertex-labeled case as it requires us to know the "target" vertex. However,
+depending on $\ell$, we can construct the following distance oracle:\\
+\\
+\textit{Data structure}. Given the graph $G$ and a number of labels $\ell$, if $\ell\in
+[1, \sqrt{n}]$, simply store the matrix of all shortest paths for all nodes to all
+labels in the graph. \\
+If $\ell\in [n-\lg n, n]$, we use the same approach as in
+\cite{gawrychowski2017better}. \\
+If $\ell\in [\sqrt{n}, n-\lg n]$, we construct an $r$-division with $r=\ell^{2/3}$. For each node within a region, store distances to all
+labels in that region in a hash table. For each boundary node, store distances to all
+labels outside the region. \\
+\\
+\textit{Query}. For the query $Q(v, \lambda)$, if $\ell\in[1, \sqrt{n}]$, we simply look up the distance in the matrix
+in constant time. \\
+If $\ell\in [n-\lg n, n]$ we compute all distances from node $v$ to the given label (note
+that there cannot be more than $\lg n$ nodes with this label. Pick the minimal distance
+using $\mathcal{O}(\lg n\lg n)$ time. \\
+If $\ell\in [\sqrt{n}, n-\lg n]$ we check if $\ell$ exists in the region of $v$. If so, return the distance from the hash table
+stored for $v$. If not, we run over all boundary nodes and return the minimal distance
+$d(v,w)+d(w,\lambda)$ for some boundary node $w$ in
+$\mathcal{O}(\sqrt{r})=\mathcal{O}(\ell^{1/3})$ time.
+
+\section{Recursion}
+We can improve the space slightly if we construct the $r$-division recursively. This will
+yield space:
+\begin{align*}
+  \sum_{i=1}^{lg_{n/r}(n)} \left(\frac{n}{r}\right)^i
+  \sqrt{r\left(\frac{r}{n}\right)^{i-1}} \min
+  \left\{\ell,\left(n-r\right)\left(\frac{r}{n}\right)^{i-1}\right\}
+\end{align*}
+
+\section{Remarks}
+Klein's multiple source shortest path \cite{klein2005multiple} is one \\
+FR-Djikstra \cite{fakcharoenphol2006planar}\\
+Nearest neighbour searches in $\lg n$ time. \\
+Exploiting Monge property
+
+\section{Sources}
+Source \cite{chechik2012improved}: \\
+blabla \\
+\\
+Source \cite{hermelin2011distance}: \\
+blabla \\
+\\
+Source \cite{thorup2004compact}: \\
+sjsadsasadasdsAI¨aoJdo \\
