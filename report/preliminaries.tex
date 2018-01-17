@@ -1,5 +1,7 @@
 \section{Preliminaries}
 \label{sec:preliminaries}
+
+\subsection{Notation}
 For a graph $G=(V,E)$ with label set $L$, we define $|V|=n$, $|E|=m$ and $|L|=\ell$. A
 distance $\delta(v,\lambda)$ for a $v\in V$ and $\lambda\in L$ is the distance between
 the node $v$ and the nearest $\lambda$-labeled node. Likewise, we use $\delta(u,v)$ to denote
@@ -8,5 +10,14 @@ We use $Q(v,\lambda)$ or $Q(u,v)$ to denote the queries "What is $\delta(v,\lamb
 "What is $\delta(u,v)$?" respectively.
 
 \subsection{The $r$-division}
-Jordan curve \cite{miller1984finding}
-An $r$-division \cite{federickson1987fast} is 
+A \textit{Jordan curve} is a simple closed curve in the plane. Given a planar graph $G$,
+a Jordan curve separator is a curve that intersects $G$ only at vertices. In 1984, Miller
+\cite{miller1984finding} showed that for any planar graph with $n$ vertices, there is a Jordan curve
+separator of size $O(\sqrt{n})$ such that each new component contains at mose $2n/3$
+vertices. He further showed that such a separator can be found in $O(n)$ time. \\
+Frederickson introduced the $r$-division, which is a decomposition of a planar graph into
+$O(n/r)$ pieces, where each piece contains $O(\sqrt{r}$ \textit{boundary vertices}. A
+boundary vertex is a vertex that belongs to multiple pieces. This was further developed
+by Klein et al. \cite{klein2013structured}, who gave a $O(n)$ time algorithm to compute
+an $r$-division of a planar graph $G$ with the additional property that each piece has a constant number of \textit{holes}, which are
+faces of a piece that are not faces of $G$.

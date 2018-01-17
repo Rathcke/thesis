@@ -6,8 +6,7 @@ Hermelin et al. \cite{hermelin2011distance} proposed several results for approxi
 distance oracles. In the first result, they give a vertex-labeled distance oracle of
 expected size $O(kn^{1+1/k})$ with a stretch of $(4k-5)$ and query time $O(k)$. This can
 be constructed in $O(kmn^{1/k})$ time. The data structure is an adaption of Thorup and
-Zwick's distance oracle \cite{thorup2005approximate}. Given some $k$, we construct the
-$k$ sets $V=A_{k}\subseteq A_{k-1} \subseteq \dots \subseteq A_0$. \\
+Zwick's distance oracle \cite{thorup2005approximate}. \\
 In another result, they give a distance oracle which depend on both $n$ and $\ell$. This has
 expected size $O(knl^{1/k})$ with query time $O(k)$, but with an exponential stretch of
 $(2^k-1)$. This is constructed in $O(kmn^{k/(2k-1)})$. \\
@@ -24,3 +23,4 @@ He also improved a dynbamic vertex-labeled distance oracle capable of handling l
 $\tilde{O}(n^{1/k})$ time with stretch $(4k-5)$. He also slightly improved space to
 $\tilde{O}(n^{1+1/k})$. \\
 TODO: Short description on approach. Detailed if we use the ideas.
+
