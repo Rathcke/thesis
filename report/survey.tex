@@ -1,7 +1,6 @@
-\section{Exact distance oracles}
-dkosapkdpa
+\section{The general case}
 
-\section{Approximate distance oracles}
+\subsection{Approximate distance oracles}
 Hermelin et al. \cite{hermelin2011distance} proposed several results for approximate
 distance oracles. In the first result, they give a vertex-labeled distance oracle of
 expected size $O(kn^{1+1/k})$ with a stretch of $(4k-5)$ and query time $O(k)$. This can
@@ -13,14 +12,23 @@ $(2^k-1)$. This is constructed in $O(kmn^{k/(2k-1)})$. \\
 In their third result, they give an oracle capable of handling label changes. This has
 expected space $O(kn^{1+1/k})$, stretch $(2\cdot3^{k-1}+1)$, query time $O(k)$ and
 handles label changes in $O(kn^{1/k}\lg \lg n)$. \\
-TODO: Short description on approach. Detailed if we use the ideas. \\
 \\
 Chechik \cite{chechik2012improved} improved the latter two results. Namely, he managed to
-reduce stretch from exponential down to polynomial. He showed how to construct a distance oracle
+reduce the stretch from exponential down to polynomial. He showed two theorems that can
+be stated as follows:
+\begin{thm}\label{chech1}
+  There is a vertex-labeled distance oracle
 of size $O(kn\ell^{1/k})$, stretch $(4k-5)$  and query time $O(k)$, which can be
-constructed in $O(m\cdot \min\{n^{k/(2k-1)}, \ell\})$. \\
-He also improved a dynbamic vertex-labeled distance oracle capable of handling label changes in
-$\tilde{O}(n^{1/k})$ time with stretch $(4k-5)$. He also slightly improved space to
-$\tilde{O}(n^{1+1/k})$. \\
-TODO: Short description on approach. Detailed if we use the ideas.
+constructed in $O(m\cdot \min\{n^{k/(2k-1)}, \ell\})$.
+\end{thm}
+\begin{thm}
+  There is a vertex-labeled and dynamic vertex-labeled distance oracle capable of handling label changes in
+$\tilde{O}(n^{1/k})$ time with stretch $(4k-5)$ and space $\tilde{O}(n^{1+1/k})$.
+\end{thm}
+For Theorem \cite{chech1}, the constructed data structure is similar to that introduced
+by Hermelin et al. \cite{hermelin2011distance}. Given a $k$, we construct the sets
+$A_{k-1} \subseteq A_{k-2} \subseteq \dots \subseteq A_0=V$. For each $i$ where each 
 
+\section{The planar case}
+Cohen-Addad et al. \cite{cohen2017fast} introduced a (non vertex-labeled) distance
+oracle  

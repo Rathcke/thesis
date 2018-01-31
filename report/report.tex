@@ -7,6 +7,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath, amssymb}
+\usepackage{amsthm}
 \usepackage{mathtools}
 \usepackage{amsfonts}
 \usepackage{pdfpages}
@@ -84,7 +85,9 @@
   aboveskip=0em,
 }
 
+% New commands
 \newcommand{\eqdef}{\overset{\mathrm{def}}{=\joinrel=}}
+\newtheorem{thm}{Theorem}
 
 \title{Variants of vertex-labeled distance oracles in dynamic and static graphs.}
 \subtitle{}
@@ -109,6 +112,8 @@
 \input{introduction.tex}
 \newpage
 \input{preliminaries.tex}
+\newpage
+\input{techniques}
 \newpage
 \input{survey.tex}
 \newpage
