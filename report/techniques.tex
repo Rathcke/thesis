@@ -1,0 +1,32 @@
+\section{Techniques for planar graphs}\label{techniques}
+
+\subsection{Separators in planar graphs}
+A \textit{Jordan curve} is a simple closed curve in the plane. Given a planar graph $G$,
+a Jordan curve separator is a curve that intersects $G$ only at vertices. In 1984, Miller
+\cite{miller1984finding} showed that for any planar graph with $n$ vertices, there is a Jordan curve
+separator of size $O(\sqrt{n})$ such that each new component contains at most $2n/3$
+vertices. He further showed that such a separator can be found in $O(n)$ time. \\
+Frederickson introduced the \textit{$r$-division}, which is a decomposition of a planar graph into
+$O(n/r)$ pieces, where each piece contains $O(\sqrt{r})$ \textit{boundary vertices}. A
+boundary vertex is a vertex that belongs to multiple pieces. This was further developed
+by Klein et al. \cite{klein2013structured}, who gave a $O(n)$ time algorithm to compute
+an $r$-division of a planar graph $G$ with the additional property that each piece has a constant number of \textit{holes}, which are
+faces of a piece that are not faces of $G$.
+
+\subsection{Klein's multiple source shortest path}
+Klein's multiple source shortest path \cite{klein2005multiple} is useful tool for planar
+graphs. Given a planar graph with nonnegative weight, we can construct a data structure
+of size $O(n \lg n)$ that can answer queries of the following form in $O(\lg n)$ time:
+For a source node $s$ and a node $t$ on the boundary of the infinite face, find the
+shortest path from $s$ to $t$. This data structure can be constructed in $O(n \lg n)$
+time. TODO: More?
+
+\subsection{FR-Djikstra}
+FR-Djikstra \cite{fakcharoenphol2006planar}\\
+
+\subsection{Monge property}
+
+
+\subsection{Others?}
+Nearest neighbour searches in $\lg n$ time. \\
+
