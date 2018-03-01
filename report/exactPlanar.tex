@@ -1,15 +1,73 @@
-\section{Exact Oracles in Directed Planar Graphs}
-\label{sec:sota}
+\section{Exact Oracles in Directed Planar Graphs}\label{exactPlanar}
+
 Previous works have given exact distance oracles for directed planar graphs of size
 $O(n^{5/3})$ with query time $O(\lg n)$ \cite{cohen2017fast}. This was improved recently
-to use $O(n^{3/2})$ space \cite{gawrychowski2017better}. TODO: Other results. \\
-\\
+to use $O(n^{3/2})$ space \cite{gawrychowski2017better}. In the general case, we have
+bounds that depend on the number of vertices $n$. But in the vertex-labeled case, we can
+sometimes win space or obtain better query times by depending on the number of labels $\ell$.
+
+\subsection{A distance oracle depending on $\ell$}
 We cannot directly adapt the approach used in \cite{cohen2017fast} and \cite{gawrychowski2017better} to work
 for the vertex-labeled case as it requires us to know the "target" vertex. However,
-depending on $\ell$, we can construct the following distance oracle:\\
+depending on $\ell$, we can use the $r$-division alone to show the following:
+\begin{thm}\label{thm1}
+  There is a distance oracle with space $O(n\ell^{2/3)})$, query time $O(\ell^{1/3})$ and
+  preprocessing time $O(n^2)$.
+\end{thm}
+\textit{Data structure}. Given a directed graph $G$ and a number of labels $\ell$, we
+construct an $r$-division. Each region $R$ then has at most $r$ nodes and $O(\sqrt{r})$
+boundary nodes. For each boundary node $u$, we store the shortest distance $d(u,\lambda)$
+for all $\lambda \in L$ in a hash table. For all nodes inside $R$, we store the shortest
+distance to all
+boundary nodes as well as the distance to all labels present in $R$ in a hash table. \\
+\\
+\textit{Query}. Given the query $Q(v, \lambda)$, if $v$ is a boundary node, we can look
+up the distance in the hash table for $v$. If $v$ is not a boundary node, look up the
+distances $\delta(u,v)+\delta(u,\lambda)$ for all boundary nodes $u$ and the distance
+$\delta(v,\lambda)$ stored in the hash table for $v$ and return the minimum.
+
+\subsubsection{Analysis}
+The $r$-division can be constructed in $O(n)$ time \cite{klein2013structured}. Henzinger
+et al. showed that single source shortest paths can be computed in $O(n)$ time
+\cite{henzinger1997faster} assuming non-negative edge lengths. This gives us a
+preprocessing time of $O(n^2)$ TODO: Better preprocessing relying on $r$ or $\ell$. \\
+\\
+For each boundary node, we store the distance to all labels. The $r$-division gives us
+$O(n/r)$ regions and ensures we
+get $O(\sqrt{r})$ boundary nodes, so this yields
+$O(\frac{n}{r}\sqrt{r}\ell)=O(\frac{n}{\sqrt{r}}\ell)$ space. For all other nodes, we
+store the distances to all boundary nodes and to all labels within that region. This
+gives us $O(nr)$ space as we can potentially store the distances to all vertices in a
+region $R$. This gives us a total of $O(\frac{n}{\sqrt{r}}\ell+nr)$ space. \\
+\\
+The query $Q(u,\lambda)$ for a boundary node $u$ can be looked up in its hash table in
+$O(1)$ time. For the query $Q(v,\lambda)$ for a vertex $v$ not on the boundary, we have
+to find the minimum distance to $\lambda$ between all boundary nodes even if it exists in
+that region as we are not guaranteed that the closest $\lambda$-labaled node is in the
+region of $v$. Thus we have a query time of $O(\sqrt{r})$. \\
+\\
+This gives us a simple trade-off, since we can pick $r$ to be sufficiently small to
+achieve constant query time, but this would give $O(n\ell)$ space. However, picking
+$r=\ell^{2/3}$, gives us $O(n\ell^{2/3}+\frac{n}{\sqrt{\ell^{2/3}}}\ell)=O(n\ell^{2/3})$
+space and query time $O(\sqrt{l^{2/3}})=O(\ell^{1/3})$. This gives us Theorem
+$\ref{thm1}$.
+
+\subsubsection{Recursion}
+We can improve the trade-off slightly if we construct the $r$-division recursively. This will
+yield space:
+\begin{align*}
+  \sum_{i=1}^{lg_{n/r}(n)} \left(\frac{n}{r}\right)^i
+  \sqrt{r\left(\frac{r}{n}\right)^{i-1}} \min
+  \left\{\ell,\left(n-r\right)\left(\frac{r}{n}\right)^{i-1}\right\}
+\end{align*}
+TODO: Not really worth it with recursion?
+
+\subsection{A distance oracle with better query times}
+We now present a distance oracle which is actually multiple data structures that perform
+well depending on $\ell$ and the number of each $\lambda\in L$. \\
 \\
 \textit{Data structure}. Given the graph $G$ and a number of labels $\ell$ with
-$\varepsilon_1 = O(\sqrt{n})$ and $\varepsilon_2=O(\lg n)$, if $\ell\in
+$\varepsilon_1 = O(\sqrt{n})$ and $\varepsilon_2=O(\text{polylog}(n))$, if $\ell\in
 [1, \varepsilon_1]$, simply store the matrix of all shortest paths for all nodes to all
 labels in the graph. \\
 If $\ell\in [n-\varepsilon_2, n]$, we use the same approach as in
@@ -21,7 +79,7 @@ labels outside the region. \\
 \textit{Query}. For the query $Q(v, \lambda)$, if $\ell\in[1, \varepsilon_1]$, we simply look up the distance in the matrix
 in constant time. \\
 If $\ell\in [n-\varepsilon_2, n]$ we compute all distances from node $v$ to the given label (note
-that there cannot be more than $\lg n$ nodes with this label. Pick the minimal distance
+that there cannot be more than $\lg n$ nodes with this label). Pick the minimal distance
 using $O(\lg n\lg n)$ time. \\
 If $\ell\in (\varepsilon_1, n-\varepsilon_2)$ we check if $\ell$ exists in the region of $v$. If so,
 we can look up the distance in the hash table
@@ -29,21 +87,4 @@ stored for $v$. We also run over all boundary nodes and return the minimal dista
 $d(v,w)+d(w,\lambda)$ for some boundary node $w$ in
 $O(\sqrt{r})=O(\ell^{1/3})$ time. \\
 
-
-\section{Recursion}
-We can improve the space slightly if we construct the $r$-division recursively. This will
-yield space:
-\begin{align*}
-  \sum_{i=1}^{lg_{n/r}(n)} \left(\frac{n}{r}\right)^i
-  \sqrt{r\left(\frac{r}{n}\right)^{i-1}} \min
-  \left\{\ell,\left(n-r\right)\left(\frac{r}{n}\right)^{i-1}\right\}
-\end{align*}
-
-
-
-\section{Remarks}
-Klein's multiple source shortest path \cite{klein2005multiple} is one \\
-FR-Djikstra \cite{fakcharoenphol2006planar}\\
-Nearest neighbour searches in $\lg n$ time. \\
-Exploiting Monge property
 

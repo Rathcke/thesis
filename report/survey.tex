@@ -1,6 +1,7 @@
-\section{The general case}
+\section{Related work}\label{survey}
 
-\subsection{Approximate distance oracles}
+\subsection{The general case}
+\subsubsection{Approximate distance oracles}
 Hermelin et al. \cite{hermelin2011distance} proposed several results for approximate
 distance oracles. In the first result, they give a vertex-labeled distance oracle of
 expected size $O(kn^{1+1/k})$ with a stretch of $(4k-5)$ and query time $O(k)$. This can
@@ -21,14 +22,33 @@ be stated as follows:
 of size $O(kn\ell^{1/k})$, stretch $(4k-5)$  and query time $O(k)$, which can be
 constructed in $O(m\cdot \min\{n^{k/(2k-1)}, \ell\})$.
 \end{thm}
-\begin{thm}
+\begin{thm}\label{chech2}
   There is a vertex-labeled and dynamic vertex-labeled distance oracle capable of handling label changes in
 $\tilde{O}(n^{1/k})$ time with stretch $(4k-5)$ and space $\tilde{O}(n^{1+1/k})$.
 \end{thm}
-For Theorem \cite{chech1}, the constructed data structure is similar to that introduced
-by Hermelin et al. \cite{hermelin2011distance}. Given a $k$, we construct the sets
-$A_{k-1} \subseteq A_{k-2} \subseteq \dots \subseteq A_0=V$. For each $i$ where each 
+For Theorem \ref{chech1}, the constructed data structure is similar to that introduced
+by Hermelin et al. \cite{hermelin2011distance} (which in turn is an adaption of the data
+structure given by Thorup and Zwick in \cite{thorup2005approximate}). Given a $k$, we construct the sets
+$A_{k-1} \subseteq A_{k-2} \subseteq \dots \subseteq A_0=V$. For each $i$ where $1\leq i
+\leq k-1$, we construct the set $A_i$ by sampling vertices from $A_{i-1}$ with
+probability $\ell^{-1/k}$. We then define the \textit{bunch} of a vertex $v$ as:
+\begin{align*}
+  B(v)=\bigcup_{i=0}^{k-2} \{u\in A_i \setminus A_{i+1}\ |\ \delta(v,u) < \delta(v,
+  A_{i+1})\}
+\end{align*}
+TODO: Brief explanation of approach + fig of results (approximate)
 
-\section{The planar case}
+\subsection{The planar case}
 Cohen-Addad et al. \cite{cohen2017fast} introduced a (non vertex-labeled) distance
-oracle  
+oracle in planar digraphs that required subquadratic space and could answer exact distance queries in
+$O(\lg n)$ time. This was the first result to achieve polylogarithmic query time, as previous
+results required query time polynomial in $n$ or could only return approximate distances.
+This result was later improved in \cite{gawrychowski2017better} from using $O(n^{5/3})$
+space to $O(n^{3/2})$ space. They also improved the tradeoff for any space $S\in [n,n^2]$.
+That is, for $S\in [n, n^{3/2}]$, they give an oracle with query time
+$\tilde{O}(n^{3/2}/S)$. For $S\in [n^{3/2}, n^2]$, they give an oracle with query time
+$O(\lg n)$. TODO: Survey this article.\\
+\\
+We give two exact vertex-labeled distance oracles for planar graphs in \ref{exactPlanar}. In
+\ref{techniques} we introduce techniques commonly used in directed planar graphs.
+
