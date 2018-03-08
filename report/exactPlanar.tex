@@ -64,27 +64,65 @@ TODO: Not really worth it with recursion?
 
 \subsection{A distance oracle with better query times}
 We now present a distance oracle which is actually multiple data structures that perform
-well depending on $\ell$ and the number of each $\lambda\in L$. \\
+well depending on $\ell$ and the number of each $\lambda\in L$. We will refer to the
+number of a given label by saying the \textit{size} of that label. Under the assumption
+that $G$ does not have $\omega(\sqrt{n})$ labels of polynomial size, we can show the
+following:
+\begin{thm}\label{thm2}
+  There is a distance oracle with space $O(n^{3/2})$, query time $O(\text{polylog}(n))$ and
+  preprocessing time $O(n^2)$.
+\end{thm}
+\textit{Data structure}. Given the directed graph $G$ and a number of labels $\ell$ with
+$\varepsilon_1 = O(\sqrt{n})$ and $\varepsilon_2=O(\text{polylog}(n))$, we divide our
+data structure into the following three cases: \\
 \\
-\textit{Data structure}. Given the graph $G$ and a number of labels $\ell$ with
-$\varepsilon_1 = O(\sqrt{n})$ and $\varepsilon_2=O(\text{polylog}(n))$, if $\ell\in
-[1, \varepsilon_1]$, simply store the matrix of all shortest paths for all nodes to all
+\textbf{Case 1:} If $\ell\in [1, \varepsilon_1]$, simply store the matrix of all shortest paths for all nodes to all
 labels in the graph. \\
-If $\ell\in [n-\varepsilon_2, n]$, we use the same approach as in
-\cite{gawrychowski2017better}. \\
-If $\ell\in (\varepsilon_1, n-\varepsilon_2)$, we construct an $r$-division with $r=\ell^{2/3}$. For each node within a region, store distances to all
-labels in that region in a hash table. For each boundary node, store distances to all
-labels outside the region. \\
+\textbf{Case 2:} If $\ell\in [n-\varepsilon_2, n]$, we use the approach described in section
+\ref{cohenplanar}. \\
+\textbf{Case 3:} If $\ell\in (\varepsilon_1, n]$ and there are $\varepsilon_1$ number of labels that have
+polynomial size, we mix
+the above two approaches. That is, for labels of size $\varepsilon_2$, we use the
+approach from section \ref{cohenplanar}. For labels of size polynomial, we store the
+shortest path from every vertex to those labels in a hash table. Additionally, for each
+label, we store the size of that label. \\
 \\
-\textit{Query}. For the query $Q(v, \lambda)$, if $\ell\in[1, \varepsilon_1]$, we simply look up the distance in the matrix
-in constant time. \\
-If $\ell\in [n-\varepsilon_2, n]$ we compute all distances from node $v$ to the given label (note
-that there cannot be more than $\lg n$ nodes with this label). Pick the minimal distance
-using $O(\lg n\lg n)$ time. \\
-If $\ell\in (\varepsilon_1, n-\varepsilon_2)$ we check if $\ell$ exists in the region of $v$. If so,
-we can look up the distance in the hash table
-stored for $v$. We also run over all boundary nodes and return the minimal distance
-$d(v,w)+d(w,\lambda)$ for some boundary node $w$ in
-$O(\sqrt{r})=O(\ell^{1/3})$ time. \\
+\textit{Query}. Depending on the case that $G$ falls under, we do the following for the
+query $Q(v, \lambda)$: \\
+\\
+\textbf{Case 1:} Look up the distance in the hash table stored for $v$. \\
+\textbf{Case 2:} The query works in the same manner as described in section
+\ref{cohenplanar}, however, we do not the target vertex. Therefore, we have to run over
+all vertices with label $\lambda$ and return the minimal distance. \\
+\textbf{Case 3:} First we look up the size of $\lambda$ in the hash table. If the size of
+$\lambda$ is $\varepsilon_2$, we do the same as in case 2. If the size of $\lambda$ is
+$\omega(\text{polylog}(n))$, we look up the distance stored in the hash table for $v$.
 
+\subsubsection{Analysis}
+Preprocessing can be done in $O(n^2)$ (all pairs shortest paths in planar graphs
+dominating). TODO: better. \\
+\\
+In case 1, we store $\ell$ distances for each vertex $v$. Since $\ell=O(\sqrt{n})$, this
+yields space $O(n^{3/2}$. \\
+In case 2, space follows directly from \cite{gawrychowski2017better} as the construction
+is identical, which is $O(n^{3/2})$. \\
+In case 3, we perform the same construction as in \cite{gawrychowski2017better} requiring
+in $O(n^{3/2})$ space. Additionally, since we assumed that there are no more that
+$O(\sqrt{n})$ labels of size $\omega(\text{polylog}(n)$, the hash table storing the
+distances to these labels cannot require more than $O(n^{3/2})$ space. The hash table
+storing the size of all labels require $O(\ell)$ space, so the total space
+in this case (and in any other case) is $O(n^{3/2})$.\\
+\\
+In case 1, we look up the distance in the hash table in $O(1)$ time.\\
+In case 2, all labels have size $O(\text{polylog}(n))$. Since the point location desribed
+in \cite{gawrychowski2017better} takes $O(\lg n)$ and we need to do at most
+$O(\text{polylog}(n))$ of these point location, the total query time is
+$O(\text{polylog}(n))$. \\
+In case 3, we do a lookup in the hash table storing the sizes of each $\lambda\in L$ in
+$O(1)$ time. Depending on the result, we either do the same thing as in case 1 or case 2,
+thus we have a query time of $O(\text{polylog}(n))$. \\
+\\
+This gives us the distance oracle given in Theorem \ref{thm2}. \\
+\\
+TODO: Fix the gap ($\omega(\sqrt{n})$ labels with $\omega(\text{polylog}(n))$ size).
 
