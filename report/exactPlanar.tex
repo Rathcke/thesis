@@ -27,10 +27,13 @@ distances $\delta(u,v)+\delta(u,\lambda)$ for all boundary nodes $u$ and the dis
 $\delta(v,\lambda)$ stored in the hash table for $v$ and return the minimum.
 
 \subsubsection{Analysis}
-The $r$-division can be constructed in $O(n)$ time \cite{klein2013structured}. Henzinger
-et al. showed that single source shortest paths can be computed in $O(n)$ time
-\cite{henzinger1997faster} assuming non-negative edge lengths. This gives us a
-preprocessing time of $O(n^2)$ TODO: Better preprocessing relying on $r$ or $\ell$. \\
+The $r$-division can be constructed in $O(n)$ time \cite{klein2013structured}. We
+construct a dense distance graphs, that is, we construct the graph where each edge $uv\in
+E$ where $u$ and $v$ are both boundary nodes has weight equal to the shortest path
+between them. Henzinger et al. showed that single source shortest paths can be computed
+in $O(n)$ time \cite{henzinger1997faster} assuming non-negative edge lengths. This graph
+can thus be computed in $O(n^2/\sqrt{r})$ time. We can then use Klein's multiple source
+shortest path algorithm \cite{klein2005multiple} to report. TODO: Better preprocessing relying on $r$ or $\ell$. \\
 \\
 For each boundary node, we store the distance to all labels. The $r$-division gives us
 $O(n/r)$ regions and ensures we
@@ -99,8 +102,8 @@ $\lambda$ is $\varepsilon_2$, we do the same as in case 2. If the size of $\lamb
 $\omega(\text{polylog}(n))$, we look up the distance stored in the hash table for $v$.
 
 \subsubsection{Analysis}
-Preprocessing can be done in $O(n^2)$ (all pairs shortest paths in planar graphs
-dominating). TODO: better. \\
+Henzinger et al. showed that single source shortest paths can be computed in $O(n)$ time
+\cite{henzinger1997faster} assuming non-negative edge lengths. Preprocessing can thus be done in $O(n^2)$. TODO: better. \\
 \\
 In case 1, we store $\ell$ distances for each vertex $v$. Since $\ell=O(\sqrt{n})$, this
 yields space $O(n^{3/2}$. \\
