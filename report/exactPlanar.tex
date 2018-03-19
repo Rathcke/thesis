@@ -12,7 +12,7 @@ for the vertex-labeled case as it requires us to know the "target" vertex. Howev
 depending on $\ell$, we can use the $r$-division alone to show the following:
 \begin{thm}\label{thm1}
   There is a distance oracle with space $O(n\ell^{2/3)})$, query time $O(\ell^{1/3})$ and
-  preprocessing time $O(n^2)$.
+  preprocessing time $O(n^2/\ell^{1/3})$.
 \end{thm}
 \textit{Data structure}. Given a directed graph $G$ and a number of labels $\ell$, we
 construct an $r$-division. Each region $R$ then has at most $r$ nodes and $O(\sqrt{r})$
@@ -27,13 +27,25 @@ distances $\delta(u,v)+\delta(u,\lambda)$ for all boundary nodes $u$ and the dis
 $\delta(v,\lambda)$ stored in the hash table for $v$ and return the minimum.
 
 \subsubsection{Analysis}
-The $r$-division can be constructed in $O(n)$ time \cite{klein2013structured}. We
-construct a dense distance graphs, that is, we construct the graph where each edge $uv\in
-E$ where $u$ and $v$ are both boundary nodes has weight equal to the shortest path
-between them. Henzinger et al. showed that single source shortest paths can be computed
-in $O(n)$ time \cite{henzinger1997faster} assuming non-negative edge lengths. This graph
-can thus be computed in $O(n^2/\sqrt{r})$ time. We can then use Klein's multiple source
-shortest path algorithm \cite{klein2005multiple} to report. TODO: Better preprocessing relying on $r$ or $\ell$. \\
+The $r$-division can be constructed in $O(n)$ time \cite{klein2013structured}. We then
+construct a dense distance graph, that is, we construct the graph where each edge $uv\in
+E$ has weight equal to $\delta(u,v)$ and $u$ and $v$ are both boundary nodes. We use
+Klein's multiple source shortest path algorithm \cite{klein2005multiple} to compute DDG's
+for each region of an $r$-division. For each region $R$ with $r$ nodes, we use $O(r\lg
+r)$ preprocessing to compute distances $\delta(u,v)$ in $O(\lg r)$ time where either $u$
+or $v$ is a boundary node. Since each region has $O(\sqrt{r})$ boundary nodes and $O(1)$
+holes, we can compute all distances in $O(r\lg r)$ time. Since there are $O(n/r)$
+regions, this yields a total running time of $O(nr\lg r/r)=O(n\lg r)$ to construct the
+dense distance graph. We need to store distances from all boundary nodes to (potentially)
+all other nodes in the graph. Henzinger et al. \cite{henzinger1997faster} gave a $O(n)$
+time algorithm for single source shortest path in planar graphs. Using this for all
+boundary nodes takes $O(n^2/\sqrt{r})$. To compute distances in the interior of each
+region, we use Fredman and Tarjan's version of Djikstra's algorithm using Fibonacci heaps
+\cite{fredman1987fibonacci}. This requires $O(n\lg n + m)$ time for each node. Each
+region has $r$ vertices, the dense distance graph for the boundary nodes in the region has
+$O(r)$ edges and the interior is a planar graph, so it has $O(r)$ edges as well. Using
+this implementation for each node gives us a total running time of $O(r(r\lg r + r))=O(r^2\lg
+r)$. The total preprocessing thus requires $O(n^2/\sqrt{r}+r^2\lg r)$ time. \\
 \\
 For each boundary node, we store the distance to all labels. The $r$-division gives us
 $O(n/r)$ regions and ensures we
@@ -51,9 +63,7 @@ region of $v$. Thus we have a query time of $O(\sqrt{r})$. \\
 \\
 This gives us a simple trade-off, since we can pick $r$ to be sufficiently small to
 achieve constant query time, but this would give $O(n\ell)$ space. However, picking
-$r=\ell^{2/3}$, gives us $O(n\ell^{2/3}+\frac{n}{\sqrt{\ell^{2/3}}}\ell)=O(n\ell^{2/3})$
-space and query time $O(\sqrt{l^{2/3}})=O(\ell^{1/3})$. This gives us Theorem
-$\ref{thm1}$.
+$r=\ell^{2/3}$ and for $n$ sufficiently large, gives us $O(n^2/\ell^{1/3})$ preprocessing time, $O(n\ell^{2/3})$ space and query time $O(\ell^{1/3})$. This gives us Theorem $\ref{thm1}$.
 
 \subsubsection{Recursion}
 We can improve the trade-off slightly if we construct the $r$-division recursively. This will
