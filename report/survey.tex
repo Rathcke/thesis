@@ -1,7 +1,8 @@
 \section{Related work}\label{survey}
-
-\subsection{The general case}
-\subsubsection{Approximate distance oracles}
+Distance oracles were introduced by Thorup and Zwick \cite{thorup2005approximate} as a
+faster alternative to the SSSP and APSP algorithms. They proposed an approximate distance
+oracle, which was later the inspiration for Hermelin et al. when they introduced distance
+oracles for vertex-labeled graphs. \\
 Hermelin et al. \cite{hermelin2011distance} proposed several results for approximate
 distance oracles. In the first result, they give a vertex-labeled distance oracle of
 expected size $O(kn^{1+1/k})$ with a stretch of $(4k-5)$ and query time $O(k)$. This can
@@ -23,13 +24,17 @@ of size $O(kn\ell^{1/k})$, stretch $(4k-5)$  and query time $O(k)$, which can be
 constructed in $O(m\cdot \min\{n^{k/(2k-1)}, \ell\})$.
 \end{thm}
 \begin{thm}\label{chech2}
-  There is a vertex-labeled and dynamic vertex-labeled distance oracle capable of handling label changes in
-$\tilde{O}(n^{1/k})$ time with stretch $(4k-5)$ and space $\tilde{O}(n^{1+1/k})$.
+  There is a dynamic vertex-labeled distance oracle capable of handling label changes in
+$\tilde{O}(n^{1/k})$ time with stretch $(4k-5)$ and space $\tilde{O}(n^{1+1/k})$. It has
+query time $O(k)$ and can be constructed in $O(kmn^{1/k})$.
 \end{thm}
-For Theorem \ref{chech1}, the constructed data structure is similar to that introduced
-by Hermelin et al. \cite{hermelin2011distance} (which in turn is an adaption of the data
-structure given by Thorup and Zwick in \cite{thorup2005approximate}). \\
-TODO: fig of results (approximate)
+\noindent
+However, the focus of this thesis is on exact distance oracles and the approaches used to
+approximate distances are often not applicable to obtain exact distances. Below, we outline results for exact distance oracles for both graphs that are labeled and
+graphs that are not labeled.
+
+\subsection{The general case}
+TODO
 
 \subsection{The planar case}\label{cohenplanar}
 Cohen-Addad et al. \cite{cohen2017fast} introduced a (non vertex-labeled) distance
@@ -49,8 +54,7 @@ TODO:
   \item Distances stored
   \item Point location approach
 \end{itemize}
-We give two exact vertex-labeled distance oracles for planar graphs in \ref{exactPlanar}. In
-\ref{techniques} we introduce techniques commonly used in directed planar graphs.
+We give two exact vertex-labeled distance oracles for planar graphs in \ref{exactPlanar}.
 
 \begin{table}[H]
   \footnotesize
@@ -58,7 +62,7 @@ We give two exact vertex-labeled distance oracles for planar graphs in \ref{exac
   \begin{tabular}{c | c | c | c | c}
     Reference & Dir. & Preprocessing & Space & Query \\
     \hline\hline
-    This & D & TODO & $O(n\ell^{2/3})$ & $O(\ell^{1/3})$ \\
+    This & D & $O(n^2/\ell{1/3})$ & $O(n\ell^{2/3})$ & $O(\ell^{1/3})$ \\
     \hline
     This & D & TODO & $O(n^{3/2})$ & $O(\text{polylog}(n))$ \\
     \hline
