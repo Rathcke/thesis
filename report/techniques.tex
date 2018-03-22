@@ -12,12 +12,15 @@ graphs. Given an $r\in (0,n)$, the division is a decomposition of the graph into
 $O(n/r)$ edge-induced subgraphs (\textit{pieces}), where each piece contains $O(r)$ vertices and $O(\sqrt{r})$ \textit{boundary vertices}. A
 boundary vertex is a vertex that belongs to multiple pieces. Frederickson showed that
 such a division exists for any planar graphs and can be found in $O(n\lg n)$ time. This
-was achieved by applying the separator theorem of Lipton and Tarjan \cite{lipton1979separator}. This was further developed
+was achieved by applying the separator theorem of Lipton and Tarjan
+\cite{lipton1979separator}, which states that for any planar graphs, there is a separator
+of size $O(\sqrt{n})$ that splits $G$ into two graph each containing at most $2n/3$ of
+the vertices. This was further developed
 by Klein et al. \cite{klein2013structured}, who gave a $O(n)$ time algorithm to compute
 an $r$-division of a planar graph $G$ with the additional property that each piece has a constant number of \textit{holes}, which are faces of a piece that are not faces of $G$.
 
 \subsection{Klein's multiple source shortest path}
-Klein's multiple source shortest path \cite{klein2005multiple} is useful tool for planar
+Klein's multiple source shortest path \cite{klein2005multiple} is another useful tool for planar
 graphs. Given a planar graph with nonnegative weight, we can construct a data structure
 of size $O(n \lg n)$ that can answer queries of the following form in $O(\lg n)$ time:
 For a source node $s$ and a node $t$ on the boundary of the infinite face, find the
@@ -25,12 +28,16 @@ shortest path from $s$ to $t$. This data structure can be constructed in $O(n \l
 time. TODO: More?
 
 \subsection{Monge property}
+Given two 
 
 
 \subsection{FR-Djikstra}
-FR-Djikstra \cite{fakcharoenphol2006planar}\\
-A \textit{Dense distance graph} or DDG is defined over a decomposition of a planar
-graph.
+A \textit{dense distance graph} or DDG is defined over a decomposition of a planar
+graph. It is the non-planar graph $G'$ of $G$ where there is an edge $uv$ if both $u$ and
+$v$ are boundary nodes with weight equal to the shortest path between the vertices.
+Fakcharoenphol and Rao \cite{fakcharoenphol2006planar} gave an algorithm that can answer
+distance queries between nodes in $O(\sqrt{n}\lg^2 n)$ after $O(n\lg^3 n)$ preprocessing
+time.
 
 \subsection{Shortest path trees}
 TODO
