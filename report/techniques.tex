@@ -1,5 +1,5 @@
 \section{Techniques for planar graphs}\label{techniques}
-In this section, we describe techniques popularly used for algorithms in planar graphs.
+In this section, we describe techniques popularly used in algorithms for planar graphs.
 
 \subsection{Separators in planar graphs}
 A \textit{Jordan curve} is a simple closed curve in the plane. Given a planar graph $G$,
@@ -17,19 +17,50 @@ was achieved by applying the separator theorem of Lipton and Tarjan
 of size $O(\sqrt{n})$ that splits $G$ into two graph each containing at most $2n/3$ of
 the vertices. This was further developed
 by Klein et al. \cite{klein2013structured}, who gave a $O(n)$ time algorithm to compute
-an $r$-division of a planar graph $G$ with the additional property that each piece has a constant number of \textit{holes}, which are faces of a piece that are not faces of $G$.
+an $r$-division of a planar graph $G$ with the additional property that each piece has a
+constant number of \textit{holes}, which are faces of a piece that are not faces of $G$.
+\\
+The $r$-division we will talk about in this thesis is the one with a constant number of
+holes that uses Jordan curves as separators and be computed in linear time. An
+illustration of of it is shown in Figure \ref{rdiv}.
+
+\begin{figure}[h!]
+  \includegraphics[width=1.0\textwidth]{figs/rdiv.pdf}
+  \caption{Illustration of an $r$-division. A region $R$ of the graph $G$ is shown in
+  grey with holes in white. Boundary vertices are shown as black circles, interior vertices are shown in
+grey. Any edge passing through the Jordan curve goes through a boundary vertex as
+indicated by the arrows.}
+    \label{rdiv}
+\end{figure}
 
 \subsection{Klein's multiple source shortest path}
 Klein's multiple source shortest path \cite{klein2005multiple} is another useful tool for planar
 graphs. Given a planar graph with nonnegative weight, we can construct a data structure
 of size $O(n \lg n)$ that can answer queries of the following form in $O(\lg n)$ time:
-For a source node $s$ and a node $t$ on the boundary of the infinite face, find the
-shortest path from $s$ to $t$. This data structure can be constructed in $O(n \lg n)$
-time. TODO: More?
+For a source vertex $v$ and a vertex $s$ on the boundary of the infinite face, find the
+shortest path from $v$ to $s$. This is especially useful to compute all pairs shortest paths between boundary
+nodes in an $r$-division as it requires $O(r\lg r)$ time for a region $R$. \\
+The idea is then to compute a shortest path tree $T$ rooted at
+$s_i$ and then modifying the tree to get the shortest path tree rooted at the
+neighbouring boundary vertex $s_{i+1}$. Using an efficient representation of dynamic
+trees that allow operations to be done in amortized $O(\lg n)$ time is possible
+\cite{tarjan2005self}\cite{henzinger1999randomized}. Any edge will then join the tree at
+most once and leave the tree at most. Since the graph is planar, we have $O(r)$ edges,
+giving us the $O(r\lg r)$ running time. \\
+The query idea is to use an Euler tour representation of the tree, called $T$, so we can
+return the distance from a vertex $u$ to the root $r$ of the tree. Since we need the
+correct version of the tree computed during preprocessing, we need a persistent data
+structure that remembers changes, so we can recover any state of $T$.
 
 \subsection{Monge property}
-Given two 
-
+Given two ordered sets $A$ and $B$ and a distance function $d$, we say $d$ has the
+\textit{Monge property} if for elements $x_1, y_1\in A$ and $x_2, y_2\in B$, where
+$x_1\leq y_1$ and $x_2\leq y_2$, then:
+\begin{align*}
+  d(x_1,x_2)+d(y_1,y_2)\leq d(x_1, y_2)+d(y_1,x_2)
+\end{align*}
+An example of this is shortest paths distances between boundary vertices in planar graph
+given all four boundary vertices lie on the infinite face. 
 
 \subsection{FR-Djikstra}
 A \textit{dense distance graph} or DDG is defined over a decomposition of a planar
@@ -38,7 +69,3 @@ $v$ are boundary nodes with weight equal to the shortest path between the vertic
 Fakcharoenphol and Rao \cite{fakcharoenphol2006planar} gave an algorithm that can answer
 distance queries between nodes in $O(\sqrt{n}\lg^2 n)$ after $O(n\lg^3 n)$ preprocessing
 time.
-
-\subsection{Shortest path trees}
-TODO
-
