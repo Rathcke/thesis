@@ -45,7 +45,7 @@ $s_i$ and then modifying the tree to get the shortest path tree rooted at the
 neighbouring boundary vertex $s_{i+1}$. Using an efficient representation of dynamic
 trees that allow operations to be done in amortized $O(\lg n)$ time is possible
 \cite{tarjan2005self}\cite{henzinger1999randomized}. Any edge will then join the tree at
-most once and leave the tree at most. Since the graph is planar, we have $O(r)$ edges,
+most once and leave the tree at most once. Since the graph is planar, we have $O(r)$ edges,
 giving us the $O(r\lg r)$ running time. \\
 The query idea is to use an Euler tour representation of the tree, called $T$, so we can
 return the distance from a vertex $u$ to the root $r$ of the tree. Since we need the
@@ -54,13 +54,42 @@ structure that remembers changes, so we can recover any state of $T$.
 
 \subsection{Monge property}
 Given two ordered sets $A$ and $B$ and a distance function $d$, we say $d$ has the
-\textit{Monge property} if for elements $x_1, y_1\in A$ and $x_2, y_2\in B$, where
-$x_1\leq y_1$ and $x_2\leq y_2$, then:
+\textit{Monge property} if for elements $u, v\in A$ and $x, y\in B$, where
+$u\leq v$ and $x\leq y$, then:
 \begin{align*}
-  d(x_1,x_2)+d(y_1,y_2)\leq d(x_1, y_2)+d(y_1,x_2)
+  d(u,x)+d(v,y)\leq d(u, y)+d(v,x)
 \end{align*}
 An example of this is shortest paths distances between boundary vertices in planar graph
-given all four boundary vertices lie on the infinite face. 
+given all four boundary vertices lie on the infinite face. It states that the sum of
+paths that do not cross is at most the sum of paths that do cross. Figure \ref{monge}
+illustrates this. \\
+Another implication of the property is that if we have found the $u$ that minimizes $d(u,y)$,
+then for all boundary vertices $v$ that are on  counter clockwise path on the face $f$
+(according to Figure \ref{monge}), then $d(v,x)\geq d(u,x)$. To see this, note that there
+is a vertex $w$ on path from $u$ to $y$ that the path $v$ to $x$ must cross. Since
+$d(u,y)\leq d(v,y)$, it implies that $d(u,w)\leq d(v,w)$. It is important that all
+vertices are on the boundary of the face as it is otherwise not true (as indicated by
+Figure \ref{monge2}).
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{figs/monge.pdf}
+    \caption{Illustration of the Monge property in planar graphs. The sum of the distances
+  when paths cross (in solid) are less than or equal to the sum of distances when paths
+do not cross (in dashed lines).}
+    \label{monge}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{figs/monge2.pdf}
+    \caption{A scenario where the Monge property does not hold, since paths
+      do not cross. The shortest paths from $u$ are
+      indicated by solid lines and a shorter path to $x$ is indicated by a dashed line.}
+    \label{monge2}
+  \end{subfigure}
+\end{figure}
+
 
 \subsection{FR-Djikstra}
 A \textit{dense distance graph} or DDG is defined over a decomposition of a planar

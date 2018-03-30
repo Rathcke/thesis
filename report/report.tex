@@ -29,6 +29,7 @@
 \usepackage{booktabs}
 \usepackage{xfrac}
 \usepackage{tabularx}
+\usepackage{subcaption}
 
 \usepackage[group-separator={,}]{siunitx}
 \sisetup{group-minimum-digits = 3}
@@ -116,9 +117,9 @@
 \newpage
 \input{notation.tex}
 \newpage
-\input{survey.tex}
-\newpage
 \input{techniques.tex}
+\newpage
+\input{survey.tex}
 \newpage
 \input{exactPlanar.tex}
 \newpage
@@ -128,5 +129,9 @@
 \addcontentsline{toc}{section}{References}
 \bibliography{report}
 \bibliographystyle{ieeetr}
+
+\newpage
+\appendix
+\input{missingproofs.tex}
 
 \end{document}
