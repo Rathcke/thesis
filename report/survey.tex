@@ -30,13 +30,19 @@ query time $O(k)$ and can be constructed in $O(kmn^{1/k})$.
 \end{thm}
 \noindent
 However, the focus of this thesis is on exact distance oracles and the approaches used to
-approximate distances are often not applicable to obtain exact distances. Below, we outline results for exact distance oracles for both graphs that are labeled and
+approximate distances are often not applicable to obtain exact distance oracles. Below, we outline results for exact distance oracles for both graphs that are labeled and
 graphs that are not labeled.
 
 \subsection{The general case}
-TODO
+
 
 \subsection{The planar case}\label{cohenplanar}
+Given a directed planar graph $G$ with both positive and negative weighted edges, Klein
+et al. \cite{klein2010shortest} gives an algorithm with $O(n\lg^2 n)$ preprocessing and
+$O(n)$ space that can answer shortest paths. 
+
+
+
 Cohen-Addad et al. \cite{cohen2017fast} introduced a (non vertex-labeled) distance
 oracle in planar digraphs that required subquadratic space and could answer exact distance queries in
 $O(\lg n)$ time. This was the first result to achieve polylogarithmic query time, as previous

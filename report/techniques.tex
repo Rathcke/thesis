@@ -33,25 +33,6 @@ indicated by the arrows.}
     \label{rdiv}
 \end{figure}
 
-\subsection{Klein's multiple source shortest path}
-Klein's multiple source shortest path \cite{klein2005multiple} is another useful tool for planar
-graphs. Given a planar graph with nonnegative weight, we can construct a data structure
-of size $O(n \lg n)$ that can answer queries of the following form in $O(\lg n)$ time:
-For a source vertex $v$ and a vertex $s$ on the boundary of the infinite face, find the
-shortest path from $v$ to $s$. This is especially useful to compute all pairs shortest paths between boundary
-nodes in an $r$-division as it requires $O(r\lg r)$ time for a region $R$. \\
-The idea is then to compute a shortest path tree $T$ rooted at
-$s_i$ and then modifying the tree to get the shortest path tree rooted at the
-neighbouring boundary vertex $s_{i+1}$. Using an efficient representation of dynamic
-trees that allow operations to be done in amortized $O(\lg n)$ time is possible
-\cite{tarjan2005self}\cite{henzinger1999randomized}. Any edge will then join the tree at
-most once and leave the tree at most once. Since the graph is planar, we have $O(r)$ edges,
-giving us the $O(r\lg r)$ running time. \\
-The query idea is to use an Euler tour representation of the tree, called $T$, so we can
-return the distance from a vertex $u$ to the root $r$ of the tree. Since we need the
-correct version of the tree computed during preprocessing, we need a persistent data
-structure that remembers changes, so we can recover any state of $T$.
-
 \subsection{Monge property}
 Given two ordered sets $A$ and $B$ and a distance function $d$, we say $d$ has the
 \textit{Monge property} if for elements $u, v\in A$ and $x, y\in B$, where
@@ -69,7 +50,10 @@ then for all boundary vertices $v$ that are on  counter clockwise path on the fa
 is a vertex $w$ on path from $u$ to $y$ that the path $v$ to $x$ must cross. Since
 $d(u,y)\leq d(v,y)$, it implies that $d(u,w)\leq d(v,w)$. It is important that all
 vertices are on the boundary of the face as it is otherwise not true (as indicated by
-Figure \ref{monge2}).
+Figure \ref{monge2}). \\
+The \textit{Monge matching problem} is finding the parent $p(v)\in A$ for all $v\in B$,
+so that $d(p(v), v)\leq d(u,v)$ for any $u\in A$. The \textit{minimum Monge matching} is
+the set of $(p(v), v)$.
 
 \begin{figure}
   \centering
@@ -90,11 +74,55 @@ do not cross (in dashed lines).}
   \end{subfigure}
 \end{figure}
 
+\subsection{Klein's multiple source shortest path}
+Klein's multiple source shortest path \cite{klein2005multiple} is another useful tool for planar
+graphs. Given a planar graph with nonnegative weight, we can construct a data structure
+of size $O(n \lg n)$ that can answer queries of the following form in $O(\lg n)$ time:
+For a source vertex $v$ and a vertex $s$ on the boundary of the infinite face, find the
+shortest path from $v$ to $s$. This is especially useful to compute all pairs shortest paths between boundary
+nodes in an $r$-division as it requires $O(r\lg r)$ time for a region $R$. \\
+The idea is then to compute a shortest path tree $T$ rooted at
+$s_i$ and then modifying the tree to get the shortest path tree rooted at the
+neighbouring boundary vertex $s_{i+1}$. Using an efficient representation of dynamic
+trees that allow operations to be done in amortized $O(\lg n)$ time is possible
+\cite{tarjan2005self}\cite{henzinger1999randomized}. Any edge will then join the tree at
+most once and leave the tree at most once. Since the graph is planar, we have $O(r)$ edges,
+giving us the $O(r\lg r)$ running time. \\
+The query idea is to use an Euler tour representation of the tree, called $T$, so we can
+return the distance from a vertex $u$ to the root $r$ of the tree. Since we need the
+correct version of the tree computed during preprocessing, we need a persistent data
+structure that remembers changes, so we can recover any state of $T$.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.6\textwidth]{figs/klein.pdf}
+  \caption{Illustration of Klein's MSSP structure. The idea is two adjacent boundary
+    vertices have almost identical shortest path trees. Computing shortest path trees
+    $T_i$ clockwise
+    around the face from $s_1$, we need only consider the \textit{differences} between
+  the two trees. The dashed line is an impossible situation. Having computed the shortest
+path tree rooted in $s_3$, $T_3$, where the shortest path to $v$ goes through $w$, it is
+impossible for the shortest path tree rooted in $s_4$ to "cross" $T_3$ since it would
+imply a shorter path from $w$ to $v$.}
+    \label{klein}
+\end{figure}
 
 \subsection{FR-Djikstra}
 A \textit{dense distance graph} or DDG is defined over a decomposition of a planar
 graph. It is the non-planar graph $G'$ of $G$ where there is an edge $uv$ if both $u$ and
 $v$ are boundary nodes with weight equal to the shortest path between the vertices.
 Fakcharoenphol and Rao \cite{fakcharoenphol2006planar} gave an algorithm that can answer
-distance queries between nodes in $O(\sqrt{n}\lg^2 n)$ after $O(n\lg^3 n)$ preprocessing
-time.
+distance queries between nodes in $O(\sqrt{n}\lg^2 n)$ after $O(n\lg^3 n)$ preprocessing.
+The decomposition used in the algorithm is the result of applying a separator
+recursively. For each level, the graph is split into "inside" and "outside" of the
+separator. They then compute and store a MSSP for both inside and outside. At the same
+time, we obtain the shortest paths between boundary nodes in the graph. Using Klein's
+algorithm \cite{klein2005shortest}, this can be done in $O(n\lg n)$ time for each level.
+The depth of the recursion is $O(\lg n)$, which means we can get preprocessing down to
+$O(n\lg^2 n)$ time using $O(n\lg n)$ space. \\
+After consutrcting the dense distance graph, it is possible to to compute a shortest path
+tree $T$ in $G'$ that obey the Monge property. Using the Monge property, they can compute
+$T$ in time linear to number of vertices in $G'$ which is significantly lower than the
+number of vertices in $G$. Specifically, the graph is divided into bipartite graph that
+all comply with the Monge property and then invoke a Djikstra-like algorithm that run in
+time proportional to the number of vertices in $G'$.
