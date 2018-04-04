@@ -117,7 +117,7 @@ The decomposition used in the algorithm is the result of applying a separator
 recursively. For each level, the graph is split into "inside" and "outside" of the
 separator. They then compute and store a MSSP for both inside and outside. At the same
 time, we obtain the shortest paths between boundary nodes in the graph. Using Klein's
-algorithm \cite{klein2005shortest}, this can be done in $O(n\lg n)$ time for each level.
+algorithm \cite{klein2005multiple}, this can be done in $O(n\lg n)$ time for each level.
 The depth of the recursion is $O(\lg n)$, which means we can get preprocessing down to
 $O(n\lg^2 n)$ time using $O(n\lg n)$ space. \\
 After consutrcting the dense distance graph, it is possible to to compute a shortest path

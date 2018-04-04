@@ -36,13 +36,28 @@ graphs that are not labeled.
 \subsection{The general case}
 
 
-\subsection{The planar case}\label{cohenplanar}
-Given a directed planar graph $G$ with both positive and negative weighted edges, Klein
-et al. \cite{klein2010shortest} gives an algorithm with $O(n\lg^2 n)$ preprocessing and
-$O(n)$ space that can answer shortest paths. 
+\subsection{The planar case}\label{surveyplanar}
+%Given a directed planar graph $G$ with both positive and negative weighted edges, Klein
+%et al. \cite{klein2010shortest} gives an algorithm with $O(n\lg^2 n)$ preprocessing and
+%$O(n)$ space that can answer shortest paths.
+Djidjev \cite{djidjev1996efficient} worked towards an algorithm which had a space-query
+product beat those of SSSP and APSP problems. He showed that, given a desired space
+allocation $S\in [n, n^2]$, the distance oracle has $O(S)$ space and $O(n^2/S)$
+query time. These results are for any class of graphs where the separator theorem holds. For planar graphs
+with $S\in [n^{4/3}, n^{3/2}]$, he gives a distance oracle with query time $O(n\lg
+  n/\sqrt{S})$. \\
+  This trade-off, $\Theta(n/\sqrt{S})$, was later improved to work over the entire range
+  of $S\in [n,n^2]$ in the subsequent papers by Chen and Xu \cite{chen2000shortest},
+  Fakcharoenphol and Rao \cite{fakcharoenphol2006planar} and Cabello
+  \cite{cabello2006many}.  Mozes and Sommer \cite{mozes2012exact} obtained the same
+  result, but with an improvement for $S\in [n, n\lg \lg n$ and for any constant
+    $\varepsilon > 0$. They manage to produce a distance oracle with preprocessing time
+    $O(n\lg n)$, space $O(S)$ and a query time of $O(n^{1/2+\varepsilon})$. This result
+    was simultaneously found by Nussbaum \cite{nussbaum2011improved}.
 
 
-
+\subsection{Distance oracle in a planar graph with $O(n^{3/2})$ space and $O(\lg n)$ query
+time.}\label{cohenplanar}
 Cohen-Addad et al. \cite{cohen2017fast} introduced a (non vertex-labeled) distance
 oracle in planar digraphs that required subquadratic space and could answer exact distance queries in
 $O(\lg n)$ time. This was the first result to achieve polylogarithmic query time, as previous
