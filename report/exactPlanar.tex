@@ -85,21 +85,49 @@ following:
   There is a distance oracle with space $O(n^{3/2})$, query time $O(\text{polylog}(n))$ and
   preprocessing time $O(n^2)$.
 \end{thm}
-\textit{Data structure}. Given the directed graph $G$ and a number of labels $\ell$ with
+
+\subsubsection{The data structure}
+Given the directed graph $G$ and a number of labels $\ell$ with
 $\varepsilon_1 = O(\sqrt{n})$ and $\varepsilon_2=O(\text{polylog}(n))$, we divide our
-data structure into the following three cases: \\
+data structure into the following two cases: \\
 \\
 \textbf{Case 1:} If $\ell\in [1, \varepsilon_1]$, simply store the matrix of all shortest paths for all nodes to all
 labels in the graph. \\
-\textbf{Case 2:} If $\ell\in [n-\varepsilon_2, n]$, we use the approach described in section
-\ref{cohenplanar}. \\
-\textbf{Case 3:} If $\ell\in (\varepsilon_1, n]$ and there are $\varepsilon_1$ number of labels that have
-polynomial size, we mix
-the above two approaches. That is, for labels of size $\varepsilon_2$, we use the
-approach from section \ref{cohenplanar}. For labels of size polynomial, we store the
-shortest path from every vertex to those labels in a hash table. Additionally, for each
-label, we store the size of that label. \\
 \\
+\textbf{Case 2:} If $\ell\in (\varepsilon_1, n]$ and there are $\varepsilon_1$ number of labels that have
+polynomial size, we employ two different strategies. For labels of size polynomial, we store the
+shortest path from every vertex to those labels in a hash table. Additionally, for each
+label, we store the size of that label. Otherwise, for labels that have size $\varepsilon_2$, we
+use an approach similar to that described in \cite{cohen2017fast} and \cite{gawrychowski2017better}. \\
+\\
+The processing stage consists of finding a cycle separator of a planar graph
+$G=(V,E)$ using a Jordan curve. This split the graph into two pieces $P=(V_P, E_P)$ and
+$Q=(V_Q, E_Q)$. Using the separators recursively, we can compute a decomposition of $G$,
+where each region has a constant number of holes. For all regions $R=(V_R, E_R)$ at some
+step in the decomposition, we store a shortest path tree in that region, denoted $T_s$,
+for all boundary nodes $s\in S$ in $R$. We also store all distances $\delta(s,u)$ and
+$\delta(u,s)$ in the entire graph $G$. Whenever we separate a region into two pieces $P$
+and $Q$, then for each hole $h\in P$ and node $u\in Q$, we store additevely weighted
+Voronoi diagram $VD(S_h, w)$, where $S_h$ is the set of boundary nodes of $h$ and $w$ are
+the distances from $u$ to all sites $s\in S_h$. TODO: Point location in Voronoi diagrams. These diagrams are also computed with $P$
+and $Q$ interchanged. Figure \ref{vd1} illustrates the situation.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.66\textwidth]{figs/vd1.pdf}
+  \caption{Illustration of stored information in the preprocessing stage.}
+    \label{vd1}
+\end{figure}
+
+
+
+ \begin{itemize}
+  \item Recursive decomposition using Jordan curves.
+  \item Voronoi diagrams
+  \item Distances stored
+  \item Point location approach
+\end{itemize}
+\noindent \\
 \textit{Query}. Depending on the case that $G$ falls under, we do the following for the
 query $Q(v, \lambda)$: \\
 \\
@@ -116,12 +144,12 @@ Henzinger et al. showed that single source shortest paths can be computed in $O(
 \cite{henzinger1997faster} assuming non-negative edge lengths. Preprocessing can thus be done in $O(n^2)$. TODO: better. \\
 \\
 In case 1, we store $\ell$ distances for each vertex $v$. Since $\ell=O(\sqrt{n})$, this
-yields space $O(n^{3/2}$. \\
+yields space $O(n^{3/2})$. \\
 In case 2, space follows directly from \cite{gawrychowski2017better} as the construction
 is identical, which is $O(n^{3/2})$. \\
 In case 3, we perform the same construction as in \cite{gawrychowski2017better} requiring
 in $O(n^{3/2})$ space. Additionally, since we assumed that there are no more that
-$O(\sqrt{n})$ labels of size $\omega(\text{polylog}(n)$, the hash table storing the
+$O(\sqrt{n})$ labels of size $\omega(\text{polylog}(n))$, the hash table storing the
 distances to these labels cannot require more than $O(n^{3/2})$ space. The hash table
 storing the size of all labels require $O(\ell)$ space, so the total space
 in this case (and in any other case) is $O(n^{3/2})$.\\
@@ -138,11 +166,3 @@ thus we have a query time of $O(\text{polylog}(n))$. \\
 This gives us the distance oracle given in Theorem \ref{thm2}. \\
 \\
 TODO: Fix the gap ($\omega(\sqrt{n})$ labels with $\omega(\text{polylog}(n))$ size).
-
-TODO:
-\begin{itemize}
-  \item Recursive decomposition using Jordan curves.
-  \item Voronoi diagrams
-  \item Distances stored
-  \item Point location approach
-\end{itemize}
