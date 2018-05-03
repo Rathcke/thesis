@@ -15,13 +15,15 @@ depending on $\ell$, we can use the $r$-division alone to show the following:
   preprocessing time $O(n^2/\ell^{1/3})$.
 \end{thm}
 \textit{Data structure}. Given a directed graph $G$, with nonnegative edge lengths and a number of labels $\ell$, we
-construct an $r$-division. Each region $R$ then has at most $r$ nodes and $O(\sqrt{r})$
+construct an $r$-division. Remember, we use the $r$-division described in
+\cite{klein2013structured}, which guarantees a constant number of holes in each region
+and ensures the total number of boundary vertices is $O(n/\sqrt{r})$. Each region $R$ then has at most $r$ nodes and $O(\sqrt{r})$
 boundary nodes. For each boundary node $u$, we store the shortest distance $d(u,\lambda)$
 for all $\lambda \in L$ in a hash table. For all nodes inside $R$, we store the shortest
 distance to all
 boundary nodes as well as the distance to all labels present in $R$ in a hash table. \\
 \\
-\textit{Query}. Given the query $Q(v, \lambda)$, if $v$ is a boundary node, we can look
+\indent \textit{Query}. Given the query $Q(v, \lambda)$, if $v$ is a boundary node, we can look
 up the distance in the hash table for $v$. If $v$ is not a boundary node, look up the
 distances $\delta(u,v)+\delta(u,\lambda)$ for all boundary nodes $u$ and the distance
 $\delta(v,\lambda)$ stored in the hash table for $v$ and return the minimum.
@@ -65,16 +67,6 @@ This gives us a simple trade-off, since we can pick $r$ to be sufficiently small
 achieve constant query time, but this would give $O(n\ell)$ space. However, picking
 $r=\ell^{2/3}$ and for $n$ sufficiently large, gives us $O(n^2/\ell^{1/3})$ preprocessing time, $O(n\ell^{2/3})$ space and query time $O(\ell^{1/3})$. This gives us Theorem $\ref{thm1}$.
 
-\subsubsection{Recursion}
-We can improve the trade-off slightly if we construct the $r$-division recursively. This will
-yield space:
-\begin{align*}
-  \sum_{i=1}^{lg_{n/r}(n)} \left(\frac{n}{r}\right)^i
-  \sqrt{r\left(\frac{r}{n}\right)^{i-1}} \min
-  \left\{\ell,\left(n-r\right)\left(\frac{r}{n}\right)^{i-1}\right\}
-\end{align*}
-TODO: Not really worth it with recursion?
-
 \subsection{A distance oracle with better query times}\label{oracle2}
 We now present a distance oracle which is actually multiple data structures that perform
 well depending on $\ell$ and the number of each $\lambda\in L$. We will refer to the
@@ -97,47 +89,67 @@ labels in the graph. \\
 \textbf{Case 2:} If $\ell\in (\varepsilon_1, n]$ and there are $\varepsilon_1$ number of labels that have
 polynomial size, we employ two different strategies. For labels of size polynomial, we store the
 shortest path from every vertex to those labels in a hash table. Additionally, for each
-label, we store the size of that label. Otherwise, for labels that have size $\varepsilon_2$, we
-use an approach similar to that described in \cite{cohen2017fast} and \cite{gawrychowski2017better}. \\
+label, we store the size of that label. Otherwise, for labels that have size
+$\varepsilon_2$, we
+use an approach similar to that described in \cite{cohen2017fast} and
+\cite{gawrychowski2017better}. We assume shortest paths are unique, which can be ensured
+in linear time \cite{motwani2010randomized}\cite{mulmuley1987matching}. We also assume
+the graph is triangulated, which we can do by adding edges with infinite length.\\
 \\
-The processing stage consists of finding a cycle separator of a planar graph
-$G=(V,E)$ using a Jordan curve. This split the graph into two pieces $P=(V_P, E_P)$ and
-$Q=(V_Q, E_Q)$. Using the separators recursively, we can compute a decomposition of $G$,
-where each region has a constant number of holes. For all regions $R=(V_R, E_R)$ at some
-step in the decomposition, we store a shortest path tree in that region, denoted $T_s$,
+\indent
+\textit{Data structure}. The processing stage consists of constructing a $r$-division,
+giving us a decomposition tree of $G$. Whenever we find a Jordan curve, the region $R$ is
+split into two pieces $P=(V_P, E_P)$ and
+$Q=(V_Q, E_Q)$. For all regions $R=(V_R, E_R)$ at some
+step in the decomposition, we store shortest path trees in that region, denoted $T_s$,
 for all boundary nodes $s\in S$ in $R$. We also store all distances $\delta(s,u)$ and
-$\delta(u,s)$ in the entire graph $G$. Whenever we separate a region into two pieces $P$
-and $Q$, then for each hole $h\in P$ and node $u\in Q$, we store additevely weighted
-Voronoi diagram $VD(S_h, w)$, where $S_h$ is the set of boundary nodes of $h$ and $w$ are
-the distances from $u$ to all sites $s\in S_h$. TODO: Point location in Voronoi diagrams. These diagrams are also computed with $P$
-and $Q$ interchanged. Figure \ref{vd1} illustrates the situation.
+$\delta(u,s)$ in the entire graph $G$ for all $u\in V$. For each region $R$, we store a
+Voronoi diagram $VD$ where boundary nodes are the sites of the diagram. Any interior $v$ node then
+belongs to the Voronoi cell of the site with the shortest distance to $v$. The Voronoi
+diagram of $R$ has a dual $VD^*$ where each face in the primal graph correspond to a
+vertex in the dual graph and there is an edge in the dual whenever two faces share an
+edge in the primal graph. Since $VD^*$ only "cut" the primal graph in edges, it means vertices in
+$VD^*$ have maximal degree three. In fact, if a vertex $v^*$ has degree two, we contract
+the edges incident to $v^*$. This results in a graph $VD^*$ with only vertices of degree
+three. An important feature of $VD^*$ is that it is a tree. In order to explain how the
+query works, for each vertex $v*$, we add three artificial edges with zero weight to the vertices adjacent
+to the face in the primal that correspond to $v^*$. Note that the three vertices all
+belong to different Voronoi cells and that we have stored the shortest paths from the site they
+belong to. Figure \ref{vd2} illustrates the
+situation for a single region vertex $v^*$ in $R$.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.66\textwidth]{figs/vd2.pdf}
+  \caption{Illustration of $VD^*$ and a vertex in the graph. The vertex $v^*$ is given in
+  red and vertices of $G$ are given in black. The edges of $VD^*$ are given by red dashed
+  lines and the edges
+of $G$ are black. The artificial edges with zero weight we add are given in green. The
+shortest path from the sites of the adjacent Voronoi cells to the vertex adjacent to the
+face corresponding to $v^*$ is given in grey.}
+    \label{vd2}
+\end{figure}
+\noindent \\
+\indent \textit{Query}. Depending on the case that $G$ falls under, we do the following for the
+query $Q(v, \lambda)$: \\
+\\
+\textbf{Case 1:} Look up the distance in the hash table stored for $v$. \\
+\textbf{Case 2:} The query is $Q(u,\lambda)$. If the size of the $\lambda$ is polynomial,
+we can look up the distance stored the hash table for that label in $O(1)$ time.
+Otherwise the size of $\lambda$ is $\varepsilon_2$ and we refer to the data structure
+described above. Let $\mathcal{V}\subset V$ be the set of vertices with label $\lambda$.
+For each $v\in \mathcal{V}$, we do the following:\\
+When a region $R$ is split into two regions $P$ and $Q$ with a Jordan curve $C$, if
+either $u$ or $v$ belongs to $C$, then we can look up the distance in $O(1)$ time since
+we have stored all distances to and from boundary nodes. If both belong to the same
+subregion, we go into that piece. The last case is when $u\in P$ and $v\in Q$. TODO!
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.66\textwidth]{figs/vd1.pdf}
-  \caption{Illustration of stored information in the preprocessing stage.}
+  \caption{Illustration of how a query $Q(u,v)$ works.}
     \label{vd1}
 \end{figure}
-
-
-
- \begin{itemize}
-  \item Recursive decomposition using Jordan curves.
-  \item Voronoi diagrams
-  \item Distances stored
-  \item Point location approach
-\end{itemize}
-\noindent \\
-\textit{Query}. Depending on the case that $G$ falls under, we do the following for the
-query $Q(v, \lambda)$: \\
-\\
-\textbf{Case 1:} Look up the distance in the hash table stored for $v$. \\
-\textbf{Case 2:} The query works in the same manner as described in section
-\ref{cohenplanar}, however, we do not the target vertex. Therefore, we have to run over
-all vertices with label $\lambda$ and return the minimal distance. \\
-\textbf{Case 3:} First we look up the size of $\lambda$ in the hash table. If the size of
-$\lambda$ is $\varepsilon_2$, we do the same as in case 2. If the size of $\lambda$ is
-$\omega(\text{polylog}(n))$, we look up the distance stored in the hash table for $v$.
 
 \subsubsection{Analysis}
 Henzinger et al. showed that single source shortest paths can be computed in $O(n)$ time

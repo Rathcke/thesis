@@ -128,4 +128,40 @@ all comply with the Monge property and then invoke a Djikstra-like algorithm tha
 time proportional to the number of vertices in $G'$.
 
 \subsection{Additively weighted Voronoi diagrams}
-
+When we find a Jordan curve which split the region $R$ into subregions $P$ and $Q$, we
+define an \textit{additively weighted Voronoi diagram} from a vertex $u\in P$ and a hole
+$h$ in $Q$. We write $VD(u,h)$ to denote the diagram. The sites of the Voronoi diagram
+are the boundary vertices of the hole $h$. A vertex $v$ in the interior of $h$ belongs to
+the Voronoi cell given by boundary node $s_i$ (site) if the distance from $u$ to $s_i$ plus the distance from $s_i$ to $v$ is less
+than the same distance through any other boundary vertex. \\
+The representation we are interested in is the one given by the dual $VD^*(u,h)$, where
+each face in the primal graph (which we assume is fully triangulated) correspond to a
+vertex in $VD^*$ and there is an edge in $VD^*$ whenever two faces share an edge in the
+primal graph. We further contract edges in $VD^*$ incident to vertices of degree two.
+This ensures that all vertices have degree three (faces that are incident to three
+vertices of the primal graph which all belong to different sites in the Voronoi diagram
+$VD$. Figure \ref{awvd} illustrates this. \\
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{figs/awvd1.pdf}
+    \caption{Illustration of an additively weighted Voronoi diagram $VD(u,h)$. The hole
+    $h$ is shown with boundary vertices in black, interior vertices in grey. Any shortest path
+  from $u$ (not shown) to an interior vertex must go through the boundary vertex whose
+cell the interior vertex belongs to.}
+    \label{awvd1}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{figs/awvd2.pdf}
+    \caption{Illustration of the representation we are after $VD^*(u,h)$. The vertices of
+      $VD^*$ are the intersection of edges of $VD$ with degree three. The diagram $VD^*$
+    is given by red vertices and red edges.\\ \\}
+    \label{awvd2}
+  \end{subfigure}
+  \label{awvd}
+\end{figure}
+Note that we can represent $VD^*$ using $O(\sqrt{r})$ as each hole has $r$ vertices and
+$\sqrt{r}$ boundary vertices. The number of vertices in $VD^*$ is $O(\sqrt{r})$ as we
+only get another vertex of degree three whenever we add another boundary vertex. Since
+$VD^*$ is also planar, it has $O(\sqrt{r})$ edges.
