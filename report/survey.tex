@@ -37,29 +37,31 @@ especially in planar graphs. A summary of distance oracles for vertex-labeled gr
 results approximate distances. Below, we outline results for exact distance oracles for planar graphs that are not labeled.
 
 \begin{table}[h!]
-  \footnotesize
   \centering
-  \begin{tabular}{c | c | c | c | c}
-    Reference & Info & Preprocessing & Space & Query \\
+  \begin{adjustbox}{width=1\textwidth}
+  \small
+  \begin{tabular}{c | c | c | c}
+    Reference & Preprocessing & Space & Query \\
     \hline\hline
-    This & D & $O(n^2/\ell{1/3})$ & $O(n\ell^{2/3})$ & $O(\ell^{1/3})$ \\
+    This & $O(n^2/\ell{1/3})$ & $O(n\ell^{2/3})$ & $O(\ell^{1/3})$ \\
     \hline
-    This & D & TODO & $O(n^{3/2})$ & $O(\text{polylog}(n))$ \\
+    This & TODO & $O(n^{3/2})$ & $O(\text{polylog}(n))$ \\
     \hline
-    Mozes et al. \cite{mozes2015efficient} & U & $O(\varepsilon^{-2}n\lg^3 n)$ & $O(\varepsilon^{-1}n\lg n)$ &
-    $O(\lg \lg n + \varepsilon^{-1})$ \\
-    \hline
-    Mozes et al. \cite{mozes2015efficient} & D &
+    Mozes et al. \cite{mozes2015efficient} &
     $O(\varepsilon^{-2}n\lg^3 n\lg (nN))$ & $O(\varepsilon^{-1}n\lg n \lg(nN))$ & $O(\lg
     \lg n \lg \lg (nN) + \varepsilon^{-1})$ \\
     \hline
-    Li et al. \cite{li20131+} & U & $O(\varepsilon^{-1}n\lg^2 n)$ & $O(\varepsilon^{-1}n\lg n)$ & $O(\varepsilon^{-1}\lg
+    Mozes et al. \cite{mozes2015efficient} & $O(\varepsilon^{-2}n\lg^3 n)$ & $O(\varepsilon^{-1}n\lg n)$ &
+    $O(\lg \lg n + \varepsilon^{-1})$ \\
+    \hline
+    Li et al. \cite{li20131+} & $O(\varepsilon^{-1}n\lg^2 n)$ & $O(\varepsilon^{-1}n\lg n)$ & $O(\varepsilon^{-1}\lg
     n \lg \Delta)$
   \end{tabular}
+\end{adjustbox}
   \caption{Results for vertex-labeled distance oracles in planar graph. All results are
   for connected graphs. All results but those introduced in this thesis are
-$(1+\varepsilon)$ stretch results. The letters 'U' and 'D' is for undirected and directed
-graphs respectively. The 'N' is the maximum arc length and $\Delta$ is the hop-diameter
+$(1+\varepsilon)$ stretch results. The first three results are for directed graphs and
+the last two are for undirected graphs. The 'N' is the maximum arc length and $\Delta$ is the hop-diameter
 of the graph.}
   \label{vertexresults}
 \end{table}

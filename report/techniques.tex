@@ -140,7 +140,7 @@ vertex in $VD^*$ and there is an edge in $VD^*$ whenever two faces share an edge
 primal graph. We further contract edges in $VD^*$ incident to vertices of degree two.
 This ensures that all vertices have degree three (faces that are incident to three
 vertices of the primal graph which all belong to different sites in the Voronoi diagram
-$VD$. Figure \ref{awvd} illustrates this. \\
+$VD$. Figure \ref{awvd1} and \ref{awvd2} illustrates this for a hole $h$. \\
 \begin{figure}
   \centering
   \begin{subfigure}[b]{0.45\textwidth}
@@ -154,7 +154,7 @@ cell the interior vertex belongs to.}
   \quad
   \begin{subfigure}[b]{0.45\textwidth}
     \includegraphics[width=\textwidth]{figs/awvd2.pdf}
-    \caption{Illustration of the representation we are after $VD^*(u,h)$. The vertices of
+    \caption{Illustration the dual Voronoi diagram $VD^*(u,h)$. The vertices of
       $VD^*$ are the intersection of edges of $VD$ with degree three. The diagram $VD^*$
     is given by red vertices and red edges.\\ \\}
     \label{awvd2}
@@ -164,4 +164,5 @@ cell the interior vertex belongs to.}
 Note that we can represent $VD^*$ using $O(\sqrt{r})$ as each hole has $r$ vertices and
 $\sqrt{r}$ boundary vertices. The number of vertices in $VD^*$ is $O(\sqrt{r})$ as we
 only get another vertex of degree three whenever we add another boundary vertex. Since
-$VD^*$ is also planar, it has $O(\sqrt{r})$ edges.
+$VD^*$ is also planar, it has $O(\sqrt{r})$ edges. This allows for efficient point
+location queries described and used in the oracle in Section \ref{oracle2}.

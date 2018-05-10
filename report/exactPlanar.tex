@@ -29,7 +29,7 @@ distances $\delta(u,v)+\delta(u,\lambda)$ for all boundary nodes $u$ and the dis
 $\delta(v,\lambda)$ stored in the hash table for $v$ and return the minimum.
 
 \subsubsection{Analysis}
-The $r$-division can be constructed in $O(n)$ time \cite{klein2013structured}. We then
+\textbf{Preprocessing}. The $r$-division can be constructed in $O(n)$ time \cite{klein2013structured}. We then
 construct a dense distance graph, that is, we construct the graph where each edge $uv\in
 E$ has weight equal to $\delta(u,v)$ and $u$ and $v$ are both boundary nodes. We use
 Klein's multiple source shortest path algorithm \cite{klein2005multiple} to compute DDG's
@@ -49,7 +49,7 @@ $O(r)$ edges and the interior is a planar graph, so it has $O(r)$ edges as well.
 this implementation for each node gives us a total running time of $O(r(r\lg r + r))=O(r^2\lg
 r)$. The total preprocessing thus requires $O(n^2/\sqrt{r}+r^2\lg r)$ time. \\
 \\
-For each boundary node, we store the distance to all labels. The $r$-division gives us
+\textbf{Space}. For each boundary node, we store the distance to all labels. The $r$-division gives us
 $O(n/r)$ regions and ensures we
 get $O(\sqrt{r})$ boundary nodes, so this yields
 $O(\frac{n}{r}\sqrt{r}\ell)=O(\frac{n}{\sqrt{r}}\ell)$ space. For all other nodes, we
@@ -57,7 +57,7 @@ store the distances to all boundary nodes and to all labels within that region. 
 gives us $O(nr)$ space as we can potentially store the distances to all vertices in a
 region $R$. This gives us a total of $O(\frac{n}{\sqrt{r}}\ell+nr)$ space. \\
 \\
-The query $Q(u,\lambda)$ for a boundary node $u$ can be looked up in its hash table in
+\textbf{Query}. The query $Q(u,\lambda)$ for a boundary node $u$ can be looked up in its hash table in
 $O(1)$ time. For the query $Q(v,\lambda)$ for a vertex $v$ not on the boundary, we have
 to find the minimum distance to $\lambda$ between all boundary nodes even if it exists in
 that region as we are not guaranteed that the closest $\lambda$-labaled node is in the
@@ -103,20 +103,17 @@ split into two pieces $P=(V_P, E_P)$ and
 $Q=(V_Q, E_Q)$. For all regions $R=(V_R, E_R)$ at some
 step in the decomposition, we store shortest path trees in that region, denoted $T_s$,
 for all boundary nodes $s\in S$ in $R$. We also store all distances $\delta(s,u)$ and
-$\delta(u,s)$ in the entire graph $G$ for all $u\in V$. For each region $R$, we store a
-Voronoi diagram $VD$ where boundary nodes are the sites of the diagram. Any interior $v$ node then
-belongs to the Voronoi cell of the site with the shortest distance to $v$. The Voronoi
-diagram of $R$ has a dual $VD^*$ where each face in the primal graph correspond to a
-vertex in the dual graph and there is an edge in the dual whenever two faces share an
-edge in the primal graph. Since $VD^*$ only "cut" the primal graph in edges, it means vertices in
-$VD^*$ have maximal degree three. In fact, if a vertex $v^*$ has degree two, we contract
-the edges incident to $v^*$. This results in a graph $VD^*$ with only vertices of degree
-three. An important feature of $VD^*$ is that it is a tree. In order to explain how the
+$\delta(u,s)$ in the entire graph $G$ for all $u\in V$. For each vertex, we also record
+if it belongs to $P$ or $Q$. Recall the definition of an
+additively weighted Voronoi diagram from Section \ref{techniques}. For each region $R$,
+whenever it is split into two regions $P$ and $Q$, we store an additively weighted
+Voronoi diagram $VD^*(u,h)$ for all vertices $u\in P$ and hole $h$ of $Q$ and store the
+same information with $P$ and $Q$ interchanged. An important feature of $VD^*$ is that it is a tree. In order to explain how the
 query works, for each vertex $v*$, we add three artificial edges with zero weight to the vertices adjacent
 to the face in the primal that correspond to $v^*$. Note that the three vertices all
 belong to different Voronoi cells and that we have stored the shortest paths from the site they
 belong to. Figure \ref{vd2} illustrates the
-situation for a single region vertex $v^*$ in $R$.
+situation for a single hole $h$ and vertex $v^*$ in $R$.
 
 \begin{figure}[h!]
   \centering
@@ -142,38 +139,78 @@ For each $v\in \mathcal{V}$, we do the following:\\
 When a region $R$ is split into two regions $P$ and $Q$ with a Jordan curve $C$, if
 either $u$ or $v$ belongs to $C$, then we can look up the distance in $O(1)$ time since
 we have stored all distances to and from boundary nodes. If both belong to the same
-subregion, we go into that piece. The last case is when $u\in P$ and $v\in Q$. TODO!
+subregion, we go into that piece. The last case is when $u\in P$ and $v\in Q$. In this
+case, we can locate which hole $h$ which contains $v$. Since we have stored the
+additively weighted Voronoi diagram $VD^*(u,h)$, we perform a point location query to
+determine the site which $v$ belongs to in $VD^*$. Note that
+$VD^*$ is a tree, so the idea is to construct a centroid decomposition of $VD^*$. To locate the
+Voronoi cell $v$ belongs to, it is sufficient to locate a terminal edge $e^*$ of $VD^*$, so that
+$v$ is in one of the two Voronoi cells adjacent to it. Now consider a vertex $v^*$
+adjacent to three sites. We can determine which site is closest to $v^*$ and if it is
+left or right of the shortest path from $s_i$ to $v^*$ (using preorder numbers in the
+shortest path tree). Say $s$ is the site closes to $v^*$, it is adjacent to two edges of
+$VD^*$. Depending on the position of $v$ relative (left or right) to the shortest path,
+we traverse one of the edges $e^*$. If $v$ is directly on the shortest path, we can
+deduct it belongs to the Voronoi cell of $s$ (refer to Figure \ref{vd1}). We continue this approach until we find a
+terminal edge $e^*$, from which we can tell which cell $v$ belongs to by comparing the
+distances to both sites.
 
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.66\textwidth]{figs/vd1.pdf}
-  \caption{Illustration of how a query $Q(u,v)$ works.}
+  \caption{Illustration of how a query $Q(u,v)$ works. First, we determine which hole $v$
+  belongs to (called P here). We then traverse our centroid decomposition of the
+  additively weighted Voronoi diagram $VD^*(u,P)$ (in blue) starting at the vertex $v^*$ given in
+red. We compare the distances from $u$ to $v$ through the three sites ($s_2$, $s_4$,
+$s_5$). Say the shortest distance is through $s_4$, we need to locate $v$ relatively to
+the shortest path from $s_4$ to $v^*$ (in green). Since $v$ is
+located right of this path, we traverse the edge given in red. Again, we compare the
+distances from $u$ to $v$ through the three sites $s_2$, $s_3$ and $s_4$. The shortest
+path goes through $s_3$ and $v$ is located left of the shortest path from $s_3$ to the
+Voronoi vertex, so again we traverse the corresponding edge. Since this is a terminal
+edge, we can determine that $v$ belongs to the Voronoi cell of $s_3$.}
     \label{vd1}
 \end{figure}
 
 \subsubsection{Analysis}
-Henzinger et al. showed that single source shortest paths can be computed in $O(n)$ time
-\cite{henzinger1997faster} assuming non-negative edge lengths. Preprocessing can thus be done in $O(n^2)$. TODO: better. \\
+\textbf{Preprocessing}.
+In case 1, we need to store shortest path
+trees from every node. Henzinger et al. showed that single source shortest paths can be
+computed in $O(n)$ time \cite{henzinger1997faster} assuming non-negative edge lengths.
+This means we can calculate the distance matrix in in $O(n^2)$, this
+can be done in $O(n^{3/2})$ time. \\
+In the other case, we need to preprocess it the same way, but we also need to compute
+additively weighted Voronoi diagrams for every node $u\in P$ and hole $h$ of $Q$ when a
+region is decomposed into two subregions. TODo \\
 \\
+\textbf{Space}.
 In case 1, we store $\ell$ distances for each vertex $v$. Since $\ell=O(\sqrt{n})$, this
 yields space $O(n^{3/2})$. \\
-In case 2, space follows directly from \cite{gawrychowski2017better} as the construction
-is identical, which is $O(n^{3/2})$. \\
-In case 3, we perform the same construction as in \cite{gawrychowski2017better} requiring
-in $O(n^{3/2})$ space. Additionally, since we assumed that there are no more that
+In case 2, since we assumed that there are no more that
 $O(\sqrt{n})$ labels of size $\omega(\text{polylog}(n))$, the hash table storing the
 distances to these labels cannot require more than $O(n^{3/2})$ space. The hash table
-storing the size of all labels require $O(\ell)$ space, so the total space
-in this case (and in any other case) is $O(n^{3/2})$.\\
+storing the size of all labels require $O(\ell)$ space. Additionally, every time we
+separate the graph into $P$ and $Q$, we need to record whether vertices belong to $P$ or
+$Q$ or the Jordan curve $C$. Since the recursive decomposition has depth $O(\lg n)$, the
+space required for this is $O(\ell\lg n)$. \\
+We also need to store all distances $\delta(u,v)$ and $\delta(v,u)$ for all
+boundary vertices $u\in V$. Since the number of boundary vertices is $O(\sqrt{n})$, this
+requires a total of $O(n^{3/2})$ space. \\
+Lastly, we need to store additively weighted Voronoi diagrams for a vertex $u\in P$ and
+hole $h$ of $Q$. Recall that we can store an additively weighted Voronoi diagrams in
+$O(\sqrt{r})$. Since we store $O(1)$ diagrams (because each region has $O(1)$ holes) for
+all vertices in the entire graph $G$, this requires a total space of $O(n\sqrt{r})$.
+Thus the total space required is $O(n^{3/2}+\ell+\ell\lg n+n\sqrt{r})=O(n^{3/2})$. \\
 \\
+\textbf{Query}.
 In case 1, we look up the distance in the hash table in $O(1)$ time.\\
-In case 2, all labels have size $O(\text{polylog}(n))$. Since the point location desribed
-in \cite{gawrychowski2017better} takes $O(\lg n)$ and we need to do at most
-$O(\text{polylog}(n))$ of these point location, the total query time is
-$O(\text{polylog}(n))$. \\
-In case 3, we do a lookup in the hash table storing the sizes of each $\lambda\in L$ in
-$O(1)$ time. Depending on the result, we either do the same thing as in case 1 or case 2,
-thus we have a query time of $O(\text{polylog}(n))$. \\
+In case 2, all labels have size $O(\text{polylog}(n))$. The point location method desribed
+above takes $O(\lg n)$ time as we descend in the recursive decomposition with depth
+$O(\lg n)$. Since the trees constructed for each additively weighted Voronoi diagram has
+depth $O(\lg \sqrt{r})$ and $r<n$, this term doesn't add to the query time. However,
+there can be up to $O(\text{polylog}(n))$ vertices of a given label, which means we have
+to do $O(\text{polylog}(n))$ different point locations and extract the minimum. This
+yields a total query time of $O(\text{polylog}(n))$. \\
 \\
 This gives us the distance oracle given in Theorem \ref{thm2}. \\
 \\
