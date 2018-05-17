@@ -1,12 +1,13 @@
 \section{Exact Oracles in Directed Planar Graphs}\label{exactPlanar}
-
 Previous works have given exact distance oracles for directed planar graphs of size
 $O(n^{5/3})$ with query time $O(\lg n)$ \cite{cohen2017fast}. This was improved recently
 to use $O(n^{3/2})$ space \cite{gawrychowski2017better}. In the general case, we have
 bounds that depend on the number of vertices $n$. But in the vertex-labeled case, we can
-sometimes win space or obtain better query times by depending on the number of labels $\ell$.
+sometimes win space or obtain better query times by depending on the number of labels
+$\ell$. We show one such distance oracle in Section \ref{oracle1}. We also give an oracle
+that does not depend on $\ell$, but has better query times in Section \ref{oracle2}.
 
-\subsection{A distance oracle depending on $\ell$}
+\subsection{A distance oracle depending on $\ell$}\label{oracle1}
 We cannot directly adapt the approach used in \cite{cohen2017fast} and \cite{gawrychowski2017better} to work
 for the vertex-labeled case as it requires us to know the "target" vertex. However,
 depending on $\ell$, we can use the $r$-division alone to show the following:
@@ -98,7 +99,8 @@ the graph is triangulated, which we can do by adding edges with infinite length.
 \\
 \indent
 \textit{Data structure}. The processing stage consists of constructing a $r$-division,
-giving us a decomposition tree of $G$. Whenever we find a Jordan curve, the region $R$ is
+giving us a decomposition tree of $G$. We also store a hash table that, given a key
+$\lambda$, return all vertices with that label. Whenever we find a Jordan curve, the region $R$ is
 split into two pieces $P=(V_P, E_P)$ and
 $Q=(V_Q, E_Q)$. For all regions $R=(V_R, E_R)$ at some
 step in the decomposition, we store shortest path trees in that region, denoted $T_s$,
@@ -172,14 +174,16 @@ edge, we can determine that $v$ belongs to the Voronoi cell of $s_3$.}
     \label{vd1}
 \end{figure}
 
-\subsubsection{Analysis}
+\subsubsection{Analysis}\label{oracle2analysis}
 \textbf{Preprocessing}.
 In case 1, we need to store shortest path
 trees from every node. Henzinger et al. showed that single source shortest paths can be
 computed in $O(n)$ time \cite{henzinger1997faster} assuming non-negative edge lengths.
 This means we can calculate the distance matrix in in $O(n^2)$, this
 can be done in $O(n^{3/2})$ time. \\
-In the other case, we need to preprocess it the same way, but we also need to compute
+In the other case, we need to preprocess it the same way. We also create a hash table of
+size $O(n)$ that can return all vertices with a given label. This take $O(n)$ time to
+create. *TODO how?. We also need to compute
 additively weighted Voronoi diagrams for every node $u\in P$ and hole $h$ of $Q$ when a
 region is decomposed into two subregions. TODo \\
 \\

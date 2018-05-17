@@ -1,4 +1,65 @@
 \section{Dynamic Oracles in Directed Planar Graphs}\label{oracle3}
-Intro
+In this chapter we show how to extend the oracle from Section \ref{oracle1} to handle
+edge weight changes in \textbf{TODO}. We also show how to extend the oracle from Section
+\ref{oracle2} to support label changes in expected $O(1)$ time.
 
-\subsection{A dynamic oracle supporting edge weight updates}
+\subsection{A dynamic oracle supporting edge weight updates}\label{oracle3}
+
+
+\subsubsection{Analysis}
+TODO
+
+\subsection{A dynamic oracle supporting label changes}\label{oracle4}
+Recall the oracle described in Section \ref{oracle2}. We now give an oracle that can
+handle label changes in $O(1)$ time. Namely, we show the following theorem if we assume
+that there are no more than $O(\sqrt{n})$ labels of polynomial size:
+\begin{thm}\label{thm3}
+  There is an oracle of requiring preprocessing time $O(n^2)$ of size $O(n^{3/2})$ that
+  can answer distance queries in $O(\text{polylog}(n))$ time. Furthermore, it can handle
+  label changes in expected amortized $O(1)$ time.
+\end{thm}
+\textit{Data structure}.
+The data structure is constructed almost the same way as the one described in Section
+\ref{oracle2}, but we modify the hash table used in it and add another one. The added
+hash table is used for a simple lookup of what label a vertex has. That is, we use the
+vertex number as key and store the label as the information. Note that we can pick our
+hash function to avoid any collision (e.g. vertex $v$ \texttt{mod} $n$). Call this hash
+table for $h_1$. \\
+We also store another hash table keeping track of all vertices with a given label as in
+the static case. That is, given a label $\lambda$, we return all vertices with $\lambda$.
+We call this hash table for $h_2$.
+\\
+\\
+\indent\textit{Update}.
+Now every time we make a label change, we need to lookup the label in $h_1$ and change
+it. However, since we also need to be able to retrieve all vertices given some label
+$\lambda$ (which we obtain from $h_1$) in the query, we need the other hash table to adjust accordingly. This means
+removing the vertex from the hash table and inserting in its new hash table location.
+
+\subsubsection{Analysis}
+Preprocessing, space and query time follows from the analysis in Section
+\ref{oracle2analysis} as it is the same construction. \\
+However, we need to analyse the update time. We can easily construct $h_1$ in $O(n)$ time
+requiring $O(n)$ space, and while each bucket contains a single element, deletion of the record  can be done in $O(1)$ time and insertion (of a new label) can be done $O(1)$ time too. \\
+Constructing $h_2$ requires a little more thinking. Each bucket can be expected to
+have $n/\ell$ elements, but in worst case they can be up to $O(n)$ in size. Therefore we
+need a \textit{dynamic perfect hashing} scheme that supports $O(1)$ lookup and
+amortized expected insertion and deletion in constant time. Dietzfelbinger et al.
+\cite{dietzfelbinger1994dynamic} introduced a randomized algorithm achieving this. The idea is to use a
+primary hash function to construct buckets containing all vertices with the same label.
+We use a second hash function (a perfect one), dividing the bucket into 'slots'
+containing a single vertex. Each bucket is assigned $s_i$ space, where $2b_i^2\leq
+2s_i^2\leq 8b_i^2$. The algorithm keeps track numbers of how many elements are in each bucket
+called $b_i$. For each bucket, there is a specified threshold $t_i=(1+c)b_i$ which is
+computed when the table is first constructed. When $b_i$ exceeds $t_i$ or falls below
+$t_i/(1+2c)$, the table is destroyed and a new one can be computed in $O(n)$ time. \\
+Now lookup can easily be done in $O(1)$ time, since we lookup the label in $h_1$ in
+$O(1)$ time. Given the label, we can locate the vertex in $h_2$ in $O(1)$ time as well.
+Deletion and insertion (which is what a label change requires) in $h_1$ is done in $O(1)$
+time. When we want to delete an element $x$ from $h_2$, we first perform a lookup of $x$
+and mark the slot as empty as well as decrementing $b_i$ by one. For insertion, we can
+add $x$ to its proper 'slot' in $O(1)$ time and we increment $b_i$ by one. \\
+Since we rarely need to recalculate the entire table, we achieve the expected amortized
+constant update time in Theorem \ref{thm3}. \\
+\\
+TODO: Return entire bucket and figure???
