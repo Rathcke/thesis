@@ -68,6 +68,9 @@ This gives us a simple trade-off, since we can pick $r$ to be sufficiently small
 achieve constant query time, but this would give $O(n\ell)$ space. However, picking
 $r=\ell^{2/3}$ and for $n$ sufficiently large, gives us $O(n^2/\ell^{1/3})$ preprocessing time, $O(n\ell^{2/3})$ space and query time $O(\ell^{1/3})$. This gives us Theorem $\ref{thm1}$.
 
+\subsubsection{The trade-off}
+TODO
+
 \subsection{A distance oracle with better query times}\label{oracle2}
 We now present a distance oracle which is actually multiple data structures that perform
 well depending on $\ell$ and the number of each $\lambda\in L$. We will refer to the
@@ -216,6 +219,7 @@ there can be up to $O(\text{polylog}(n))$ vertices of a given label, which means
 to do $O(\text{polylog}(n))$ different point locations and extract the minimum. This
 yields a total query time of $O(\text{polylog}(n))$. \\
 \\
-This gives us the distance oracle given in Theorem \ref{thm2}. \\
-\\
-TODO: Fix the gap ($\omega(\sqrt{n})$ labels with $\omega(\text{polylog}(n))$ size).
+This gives us the distance oracle given in Theorem \ref{thm2}.
+
+\subsubsection{The trade-off}
+TODO \\

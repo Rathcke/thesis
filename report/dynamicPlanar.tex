@@ -27,12 +27,11 @@ hash function to avoid any collision (e.g. vertex $v$ \texttt{mod} $n$). Call th
 table for $h_1$. \\
 We also store another hash table keeping track of all vertices with a given label as in
 the static case. That is, given a label $\lambda$, we return all vertices with $\lambda$.
-We call this hash table for $h_2$.
-\\
+We call this hash table for $h_2$. \\
 \\
 \indent\textit{Update}.
-Now every time we make a label change, we need to lookup the label in $h_1$ and change
-it. However, since we also need to be able to retrieve all vertices given some label
+Every time we make a label change, we need to lookup the label in $h_1$ and change
+it to the new one. However, since we also need to be able to retrieve all vertices given some label
 $\lambda$ (which we obtain from $h_1$) in the query, we need the other hash table to adjust accordingly. This means
 removing the vertex from the hash table and inserting in its new hash table location.
 
@@ -40,26 +39,41 @@ removing the vertex from the hash table and inserting in its new hash table loca
 Preprocessing, space and query time follows from the analysis in Section
 \ref{oracle2analysis} as it is the same construction. \\
 However, we need to analyse the update time. We can easily construct $h_1$ in $O(n)$ time
-requiring $O(n)$ space, and while each bucket contains a single element, deletion of the record  can be done in $O(1)$ time and insertion (of a new label) can be done $O(1)$ time too. \\
+requiring $O(n)$ space, and since each bucket contains a single element, deletion of the
+record  can be done in $O(1)$ time and insertion (of a new label) can be done $O(1)$ time
+too. \\
+\\
 Constructing $h_2$ requires a little more thinking. Each bucket can be expected to
 have $n/\ell$ elements, but in worst case they can be up to $O(n)$ in size. Therefore we
 need a \textit{dynamic perfect hashing} scheme that supports $O(1)$ lookup and
 amortized expected insertion and deletion in constant time. Dietzfelbinger et al.
 \cite{dietzfelbinger1994dynamic} introduced a randomized algorithm achieving this. The idea is to use a
 primary hash function to construct buckets containing all vertices with the same label.
-We use a second hash function (a perfect one), dividing the bucket into 'slots'
-containing a single vertex. Each bucket is assigned $s_i$ space, where $2b_i^2\leq
-2s_i^2\leq 8b_i^2$. The algorithm keeps track numbers of how many elements are in each bucket
-called $b_i$. For each bucket, there is a specified threshold $t_i=(1+c)b_i$ which is
-computed when the table is first constructed. When $b_i$ exceeds $t_i$ or falls below
-$t_i/(1+2c)$, the table is destroyed and a new one can be computed in $O(n)$ time. \\
+These buckets are dynamic arrays. We use hashing with chaining for the vertices in each bucket to ensure we have expected lookup in $O(1)$ time. The algorithm keeps track numbers of how many elements are in
+each bucket and we refer to these numbers as $b_i$. Each bucket is assigned $s_i$ space,
+where $s_i=2b_i$. For each bucket, there is a specified threshold $t_i=(1+c)b_i$ (in this
+case, we use $c=1$). When $b_i$ exceeds $t_i$ or falls below
+$t_i/(1+2c)$, the array is destroyed and a new (larger or smaller) array is created and
+we rehash all elements of the bucket into it in $O(n)$ time. \\
 Now lookup can easily be done in $O(1)$ time, since we lookup the label in $h_1$ in
 $O(1)$ time. Given the label, we can locate the vertex in $h_2$ in $O(1)$ time as well.
-Deletion and insertion (which is what a label change requires) in $h_1$ is done in $O(1)$
+Deletion and insertion (which is what a label change requires) in $h_1$ is done in
+expected $O(1)$
 time. When we want to delete an element $x$ from $h_2$, we first perform a lookup of $x$
 and mark the slot as empty as well as decrementing $b_i$ by one. For insertion, we can
-add $x$ to its proper 'slot' in $O(1)$ time and we increment $b_i$ by one. \\
-Since we rarely need to recalculate the entire table, we achieve the expected amortized
-constant update time in Theorem \ref{thm3}. \\
-\\
-TODO: Return entire bucket and figure???
+add $x$ to its proper place in expected $O(1)$ time and we increment $b_i$ by one. \\
+Since we rarely need to rehash elements into a dynamic array, we achieve the expected amortized
+constant update time. First we need to show that we can expect any 'chain' in the array
+will have constant size. We hash $b_i$ elements uniformly at random into a table of size
+$s_i=2b_i$, thus any chain is expected to have $1/2$ elements - also called the load
+factor $\alpha$. When $\alpha$ is $O(1)$, we can also expect constant search, insertion and
+deletion \cite{cormen2009introduction}. \\
+The space taken by the hash table is $O(n)$, which can be seen by inspecting the size of
+each array. The arrays have size $s_i$ which all have size $O(b_i)$, so we get space $S$ is
+\begin{align*}
+  S&=O\left(\sum_i s_i\right) \\
+   &=O\left(\sum_i b_i\right) \\
+   &=O(n) \comment{As $\sum_i b_i = n$}
+\end{align*}
+This will yield the result in Theorem \ref{thm3} 
+TODO: Label changes to size $O(\sqrt{n})$ and figure???

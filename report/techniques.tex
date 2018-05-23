@@ -9,21 +9,27 @@ a Jordan curve separator is a curve that intersects $G$ only at vertices. In 198
 \cite{miller1984finding} showed that for any planar graph with $n$ vertices, there is a Jordan curve
 separator of size $O(\sqrt{n})$ such that each new component contains at most $2n/3$
 vertices. He further showed that such a separator can be found in $O(n)$ time. \\
-Frederickson introduced the \textit{$r$-division} for planar
+Frederickson \cite{frederickson1987fast} introduced the \textit{$r$-division} for planar
 graphs. Given an $r\in (0,n)$, the division is a decomposition of the graph into
 $O(n/r)$ edge-induced subgraphs (\textit{pieces}), where each piece contains $O(r)$ vertices and $O(\sqrt{r})$ \textit{boundary vertices}. A
-boundary vertex is a vertex that belongs to multiple pieces. Frederickson showed that
+boundary vertex is a vertex that belongs to multiple pieces, while an \textit{interior
+vertex} is one that belongs to a single piece. Frederickson showed that
 such a division exists for any planar graphs and can be found in $O(n\lg n)$ time. This
 was achieved by applying the separator theorem of Lipton and Tarjan
 \cite{lipton1979separator}, which states that for any planar graphs, there is a separator
 of size $O(\sqrt{n})$ that splits $G$ into two graph each containing at most $2n/3$ of
-the vertices. This was further developed
+the vertices. Klein and Subramanain \cite{klein1998fully} were the first to give an
+$r$-division which had few \textit{holes}. Holes are faces of a piece which are not faces
+of the graph $G$. This was further developed
 by Klein et al. \cite{klein2013structured}, who gave a $O(n)$ time algorithm to compute
-an $r$-division of a planar graph $G$ with the additional property that each piece has a
-constant number of \textit{holes}, which are faces of a piece that are not faces of $G$.
+an $r$-division of a planar graph $G$ also with the additional property that each piece has a
+constant number of holes. It also produces a decomposition tree representing a recursive
+decomposition of $G$. Particularly, given an increasing sequence $\overline{r}=(r_1,r_2,\dots)$, we
+continue to decompose a piece on the previous level of the decomposition.
 \\
-The $r$-division we will talk about in this thesis is the one with a constant number of
-holes that uses Jordan curves as separators and be computed in linear time. An
+The $r$-division we will use in this thesis is the one described by Klein et al.
+\cite{klein2013structured} with a constant number of
+holes that uses Jordan curves as separators, provides a decomposition tree and can be computed in linear time. An
 illustration of of it is shown in Figure \ref{rdiv}.
 
 \begin{figure}[h!]
@@ -34,6 +40,16 @@ grey. Any edge passing through the Jordan curve goes through a boundary vertex a
 indicated by the arrows.}
     \label{rdiv}
 \end{figure}
+
+\subsection{The dense distance graph}
+A \textit{dense distance graph} or DDG is defined over a decomposition of a planar
+graph. It is the non-planar graph $G'$ of $G$ where there is an edge $uv$ if both $u$ and
+$v$ are boundary nodes with weight equal to the shortest path between the vertices within
+the piece(s) they share. The space requirement for storing the matrix of all distances between boundary
+nodes is $O(\sqrt{r}^2)=O(r)$. We can construct it using Klein's multiple source shortest
+path algorithm in $O(r\lg r)$ time since we assume that each piece has $O(1)$ holes.
+Summing over all $O(n/r)$ pieces, the total space required is $O(n)$. Likewise, calculating all
+distances in all pieces requires $O(nr\lg r/r)=O(n\lg r)$ time.
 
 \subsection{Monge property}
 Given two ordered sets $A$ and $B$ and a distance function $d$, we say $d$ has the
@@ -55,7 +71,10 @@ vertices are on the boundary of the face as it is otherwise not true (as indicat
 Figure \ref{monge2}). \\
 The \textit{Monge matching problem} is finding the parent $p(v)\in A$ for all $v\in B$,
 so that $d(p(v), v)\leq d(u,v)$ for any $u\in A$. The \textit{minimum Monge matching} is
-the set of $(p(v), v)$.
+the set of $(p(v), v)$. This problem has a $O(m+n)$ solution for a $m$ by $n$ matrix found by Aggarwal et al.
+\cite{aggarwal1987geometric}, and is also known as the SMAWK algorithm. The Monge property is used in the algorithm described in Section
+\ref{frdjikstra} to speed up shortest path searching with Djikstra's algorithm using
+\textit{Monge heaps}.
 
 \begin{figure}
   \centering
@@ -73,6 +92,58 @@ do not cross (in dashed lines).}
       do not cross. The shortest paths from $u$ are
       indicated by solid lines and a shorter path to $x$ is indicated by a dashed line.}
     \label{monge2}
+  \end{subfigure}
+\end{figure}
+
+\subsubsection{The Monge subheap structure}\label{mongeheap}
+FR-Djikstra, which will be described in Section \ref{frdjikstra}, maintains a data
+structure known as a Monge heap. This structure is build upon an $r$-division. Whenever we separate the graph into two
+subgraphs $P$ and $Q$, we construct the complete graph $K_i$ on all boundary nodes in
+each piece where the weight of each edge correspond to shortest path distance using
+only edges from a single piece. We then split the complete graph into two equally
+sized parts $A$
+and $B$ such that all elements from $A$ are consecutive boundary nodes clokwise around
+the face and vice versa for all elements of $B$. We add the bipartite graph of $A$ and $B$ to
+the decomposition. Doing so recursively, we get that the decomposition has depth $O(\lg
+\sqrt{r})$ and that each boundary vertex belongs to $O(\lg \sqrt{r})$ different bipartite
+subgraphs. See Figure \ref{mongesubgraph} for illustration. Consider the distance matrix
+of the boundary vertices. Due to the boundary vertices being located on a cycle, this matrix
+does not exhibit the Monge property. However, the submatrices corresponding to the
+bipartite graphs are Monge (Figure \ref{mongematrix}). \\
+The heap stores a distance label $d_v$ for each vertex $v$ of the
+clique which is equal to the weight of the shortest path encountered so far. The
+\textit{representive} of the heap is chosen to be the vertex whose label $d_v$ has the lowest
+value. Each heap can support the following operations:
+\begin{itemize}
+  \item \texttt{findMin()}: Return the representive vertex of the heap.
+  \item \texttt{extractMin()}: Extract the representive vertex from the heap.
+  \item \texttt{scanInPiece(v,d)}: Given the distance label on $v$ is the weight of the
+    shortest path from $s$ to $v$ in the entire $G$, relax all outgoing edges from $v$.
+    That is, set $d_u=\min\{d_u, d_v+d_P(u,v)\}$ where $d_P$ represents the shortest path
+    in some piece $P$.
+\end{itemize}
+We can implement \texttt{findRoot()} in $O(1)$ time, \texttt{extractRoot()} in amortized
+$O(\lg \sqrt{r})$ time and \texttt{scanInPiece(v,d)} in amortized $O(\lg^2 \sqrt{r})$
+time \cite{fakcharoenphol2006planar}.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{figs/mongesubgraph.pdf}
+    \caption{A decomposition of a DDG into bipartite graphs. The black circles are
+    boundary nodes of a piece $P$. The red line splits the vertex set into a bipartite
+  graph. The blue and green does the same on a lower level of the recursion. The
+decomposition has depth $O(\lg \sqrt{r})$ and each vertex appears in $O(\lg \sqrt{r})$
+subgraphs.}
+    \label{mongesubgraph}
+  \end{subfigure}
+  \quad
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=\textwidth]{figs/mongematrix.pdf}
+    \caption{A matrix $M$ that is not Monge and a decomposition of $M$ into submatrices
+    that all are in Monge. The shaded parts are not in Monge and are to be decomposed
+  further. \\ \\ \\ \\} 
+    \label{mongematrix}
   \end{subfigure}
 \end{figure}
 
@@ -109,25 +180,39 @@ imply a shorter path from $w$ to $v$.}
     \label{klein}
 \end{figure}
 
-\subsection{FR-Djikstra}
-A \textit{dense distance graph} or DDG is defined over a decomposition of a planar
-graph. It is the non-planar graph $G'$ of $G$ where there is an edge $uv$ if both $u$ and
-$v$ are boundary nodes with weight equal to the shortest path between the vertices.
-Fakcharoenphol and Rao \cite{fakcharoenphol2006planar} gave an algorithm that can answer
-distance queries between nodes in $O(\sqrt{n}\lg^2 n)$ after $O(n\lg^3 n)$ preprocessing.
-The decomposition used in the algorithm is the result of applying a separator
-recursively. For each level, the graph is split into "inside" and "outside" of the
-separator. They then compute and store a MSSP for both inside and outside. At the same
-time, we obtain the shortest paths between boundary nodes in the graph. Using Klein's
-algorithm \cite{klein2005multiple}, this can be done in $O(n\lg n)$ time for each level.
-The depth of the recursion is $O(\lg n)$, which means we can get preprocessing down to
-$O(n\lg^2 n)$ time using $O(n\lg n)$ space. \\
-After consutrcting the dense distance graph, it is possible to to compute a shortest path
-tree $T$ in $G'$ that obey the Monge property. Using the Monge property, they can compute
-$T$ in time linear to number of vertices in $G'$ which is significantly lower than the
-number of vertices in $G$. Specifically, the graph is divided into bipartite graph that
-all comply with the Monge property and then invoke a Djikstra-like algorithm that run in
-time proportional to the number of vertices in $G'$.
+\subsection{FR-Djikstra}\label{frdjikstra}
+Fakcharoenphol and Rao \cite{fakcharoenphol2006planar} gave an algorithm for finding
+shortest paths in a DDG depending on the number of boundary vertices. For an
+$r$-division, the number of boundary nodes is $b=O(n/\sqrt{r})$. Note that simply
+running Djikstra's algorithm on the DDG would take
+$O(b^2)$ time. However, they are able to exploit the Monge-like property of the
+edges in the DDG to run it in $O(b\lg b\lg \sqrt{r})$. Specifically, the DDG gives us a
+clique $C$ for each piece in the decomposition, which for each we store Monge heaps. We
+denoted these heaps by $M_c$. Besides that, we keep a global heap $H$ to be used in Djikstra step in which we store references to each Monge heap $M_c$ as well as the
+representive vertex $v$ along with its label $d_v$. Additionally, for each vertex $v$, we
+record if it has been visited before. As mentioned in
+Section \ref{mongeheap}, we can have up to $O(\lg \sqrt{r})$ copies of each vertex in the
+Monge heaps, though we only do something the first time it is extracted. \\
+This suffices to explain the query algorithm in FR-Djikstra. In each iteration of
+Djikstra, we extract the minimum element, call it $v$, from the global heap $H$. If it has been visited
+before, we do nothing except extrating it. If it has not been visited, we mark it as
+visited and set the distance $d(u,v)$ to be equal to $d_v$ (in $H$) from some $u$. For
+each Monge heap that $v$ was part of, $M_{c'}$, we perform \texttt{scanInPiece($v$,
+$d_v$)} followed by a call to \texttt{findMin()}. If $v$ was the representive of a Monge
+heap, we extract it as well and find a new representive with \texttt{findMin()}. The
+global heap is updated accordingly. \\
+\\
+Note that every time we call \texttt{findMin()}, we either call \texttt{extractMin()} or
+\texttt{scanInPiece()}, which means we can bound the running time in the number of call to
+\texttt{extractMin()} and \texttt{scanInPiece()}. Any vertex $v$ is extracted at most
+$O(\lg \sqrt{r})$ as it belongs to at most $O(\lg \sqrt{r})$ Monge heaps. We also only
+perform \texttt{scanInPiece()} once for every vertex in each Monge heap. Thus, this
+requires $O(\lg^2 \sqrt{r})$ time for each vertex. There is a total of $b$ boundary
+vertices, so the total time of this is $O(b\lg^2 \sqrt{r})$. \\
+The number of vertices in the global heap $H$ at any point is $O(b)$, so finding the
+minimum element takes $O(\lg b)$ time. Each vertex is inserted into $H$ at most $O(\lg
+\sqrt{r})$ times, so the number of extractions from $H$ is $O(b\lg \sqrt{r})$. Thus we
+can run Djikstra in $O(b\lg b\lg \sqrt{r})$ time.
 
 \subsection{Additively weighted Voronoi diagrams}
 When we find a Jordan curve which split the region $R$ into subregions $P$ and $Q$, we
