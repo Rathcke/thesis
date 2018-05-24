@@ -74,12 +74,16 @@ TODO
 \subsection{A distance oracle with better query times}\label{oracle2}
 We now present a distance oracle which is actually multiple data structures that perform
 well depending on $\ell$ and the number of each $\lambda\in L$. We will refer to the
-number of a given label by saying the \textit{size} of that label. Under the assumption
-that $G$ does not have $\omega(\sqrt{n})$ labels of polynomial size, we can show the
-following:
+number of a given label by saying the \textit{size} of that label. If $\ell$ is
+$O(\sqrt{n})$, a simple result gives us the following theorem:
+\begin{thm}\label{thm4}
+There is a distance oracle with space $O(n^{3/2})$, query time $O(1)$ and preprocessing
+time $O(n^2)$.
+\end{thm}
+Under the assumption that $G$ does not have $\omega(\sqrt{n})$ labels of polynomial size, we can show the following theorem:
 \begin{thm}\label{thm2}
   There is a distance oracle with space $O(n^{3/2})$, query time $O(\text{polylog}(n))$ and
-  preprocessing time $O(n^2)$.
+  preprocessing time $O(n^{3/2})$.
 \end{thm}
 
 \subsubsection{The data structure}
@@ -178,40 +182,56 @@ edge, we can determine that $v$ belongs to the Voronoi cell of $s_3$.}
 \end{figure}
 
 \subsubsection{Analysis}\label{oracle2analysis}
-\textbf{Preprocessing}.
-In case 1, we need to store shortest path
+\textbf{Preprocessing}. \\
+\textit{Case 1}. We need to store shortest path
 trees from every node. Henzinger et al. showed that single source shortest paths can be
 computed in $O(n)$ time \cite{henzinger1997faster} assuming non-negative edge lengths.
-This means we can calculate the distance matrix in in $O(n^2)$, this
-can be done in $O(n^{3/2})$ time. \\
-In the other case, we need to preprocess it the same way. We also create a hash table of
-size $O(n)$ that can return all vertices with a given label. This take $O(n)$ time to
-create. *TODO how?. We also need to compute
-additively weighted Voronoi diagrams for every node $u\in P$ and hole $h$ of $Q$ when a
-region is decomposed into two subregions. TODo \\
+This means we can calculate the distance matrix in in $O(n^2)$. For each row (distances
+from a vertex), we can find the minimum distance to all labels in $O(n)$ time. Doing so
+for all rows requires $O(n^2)$ time. \\
 \\
-\textbf{Space}.
-In case 1, we store $\ell$ distances for each vertex $v$. Since $\ell=O(\sqrt{n})$, this
+\textit{Case 2}. The $r$-division along with its decomposition is constructed in $O(n)$
+time \cite{klein2013structured}. Consider a step where the graph is separated into $P$ and $Q$. To compute all additively weighted Voronoi diagrams for every node $u\in
+P$, hole $h$ of $Q$, we need all
+shortest path to and from boundary vertices of $h$. We have shown that there are
+$O(\sqrt{n})$ boundary vertices, so computing the shortest path trees for all
+boundary nodes can be done in $O(n^{3/2})$ time for each. To compute all shortest path \textit{to} boundary vertices, we construct the graph
+$G'$, which is the graph obtained by changing the direction of all edges of $G$. Since
+$G$ is planar, it has $O(n)$ edges, so this can be achieved in $O(n)$ time. We then
+compute all shortest path trees rooted at boundary vertices in $O(n^{3/2})$ time. The
+distances $\delta(s,u)$ in $G'$ for a boundary vertex $s$ and interior vertex $u$ are then equal
+to the distance $\delta(u,s)$ in $G$. We get the same result with $P$ and $Q$
+interchanged. This takes a total of $O(n^{3/2})$ time. The diagrams are constructed in
+$O(r)$ time and extended in $O(\sqrt{r})$ time to support point location. We also create a hash table of
+in $O(n)$ time that can return all vertices with a given label \cite{fredman1984storing}.
+Likewise, the hash table keeping track of the size of labels takes $O(\ell)$ time to
+create. Thus, the total time for preprocessing is $O(n^{3/2})$. \\
+\\
+\textbf{Space}. \\
+\textit{Case 1}. We store $\ell$ distances for each vertex $v$. Since $\ell=O(\sqrt{n})$, this
 yields space $O(n^{3/2})$. \\
-In case 2, since we assumed that there are no more that
+\\
+\textit{Case 2}. Since we assumed that there are no more that
 $O(\sqrt{n})$ labels of size $\omega(\text{polylog}(n))$, the hash table storing the
 distances to these labels cannot require more than $O(n^{3/2})$ space. The hash table
-storing the size of all labels require $O(\ell)$ space. Additionally, every time we
+storing the size of all labels require $O(\ell)$ space. The hash table storing all
+vertices, given their label, requires $O(n)$ space \cite{fredman1984storing}. Additionally, every time we
 separate the graph into $P$ and $Q$, we need to record whether vertices belong to $P$ or
 $Q$ or the Jordan curve $C$. Since the recursive decomposition has depth $O(\lg n)$, the
-space required for this is $O(\ell\lg n)$. \\
+space required for this is $O(n\lg n)$. \\
 We also need to store all distances $\delta(u,v)$ and $\delta(v,u)$ for all
 boundary vertices $u\in V$. Since the number of boundary vertices is $O(\sqrt{n})$, this
 requires a total of $O(n^{3/2})$ space. \\
 Lastly, we need to store additively weighted Voronoi diagrams for a vertex $u\in P$ and
 hole $h$ of $Q$. Recall that we can store an additively weighted Voronoi diagrams in
-$O(\sqrt{r})$. Since we store $O(1)$ diagrams (because each region has $O(1)$ holes) for
+$O(\sqrt{r})$ space. Since we store $O(1)$ diagrams (because each region has $O(1)$ holes) for
 all vertices in the entire graph $G$, this requires a total space of $O(n\sqrt{r})$.
-Thus the total space required is $O(n^{3/2}+\ell+\ell\lg n+n\sqrt{r})=O(n^{3/2})$. \\
+Thus the total space required is $O(n^{3/2}+\ell+n\lg n+n\sqrt{r})=O(n^{3/2})$. \\
 \\
-\textbf{Query}.
-In case 1, we look up the distance in the hash table in $O(1)$ time.\\
-In case 2, all labels have size $O(\text{polylog}(n))$. The point location method desribed
+\textbf{Query}. \\
+\textit{Case 1}. We look up the distance in the hash table in $O(1)$ time.\\
+\\
+\textit{Case 2}. All labels have size $O(\text{polylog}(n))$. The point location method desribed
 above takes $O(\lg n)$ time as we descend in the recursive decomposition with depth
 $O(\lg n)$. Since the trees constructed for each additively weighted Voronoi diagram has
 depth $O(\lg \sqrt{r})$ and $r<n$, this term doesn't add to the query time. However,
@@ -219,7 +239,7 @@ there can be up to $O(\text{polylog}(n))$ vertices of a given label, which means
 to do $O(\text{polylog}(n))$ different point locations and extract the minimum. This
 yields a total query time of $O(\text{polylog}(n))$. \\
 \\
-This gives us the distance oracle given in Theorem \ref{thm2}.
+The data structure and analysis of case 1 gives us Theorem \ref{thm4} and the data structure and analysis of case 2 gives us the distance oracle given in Theorem \ref{thm2}.
 
 \subsubsection{The trade-off}
 TODO \\
