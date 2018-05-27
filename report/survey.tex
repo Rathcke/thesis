@@ -30,11 +30,15 @@ query time $O(k)$ and can be constructed in $O(kmn^{1/k})$.
 \end{thm}
 \noindent
 However, the focus of this thesis is on exact distance oracles in planar graphs and the approaches used to
-approximate distances are often not applicable to obtain exact distance oracles.
+approximate distances are often not applicable to obtain exact distance oracles. However,
+results in this area have near-linear space and (near-) constant query times
+\cite{klein2002preprocessing} \cite{kawarabayashi2011linear} \cite{kawarabayashi2013more}
+\cite{thorup2004compact} \cite{wulff2016approximate}.
 Furthermore, very little is known about exact vertex-labeled distance oracles -
-especially in planar graphs. A summary of distance oracles for vertex-labeled graphs in static planar graphs is given in Table
+more so in planar graphs. A summary of distance oracles for vertex-labeled graphs in static planar graphs is given in Table
 \ref{vertexresults}. Note that the work in the field is very limited and all known
-results approximate distances. Below, we outline results for exact distance oracles for planar graphs that are not labeled.
+results approximate distances. In the next section, we outline results for exact distance
+oracles for planar graphs that are not labeled.
 
 \begin{table}[h!]
   \centering
@@ -159,4 +163,35 @@ A summary of preprocessing, space and query times for distance oracles in planar
 \end{table}
 
 \subsection{The dynamic planar case}
-TODO
+The dynamic planar case is an area much less studied. Most results related to distance
+oracles are approximate results. \\
+\\
+Fakcharoenphol and Rao \cite{fakcharoenphol2006planar} gave a data structure that could
+update edge weights in amortized $O(n^{2/3}\lg^{5/3} n)$ (and for queries). The trade-off
+they give is $O(r)$ for update and $O(n/\sqrt{r})$ for queries. \\
+\\
+Klein \cite{klein2005multiple} gave a dynamic algorithm for which the worst case of each
+operation is $O(n^{2/3}\lg^{5/3} n)$. He further showed how to reduce the construction of
+the DDG used in Fakcharoenphol and Rao's algorithm from $O(n\lg^3 n)$ to $O(n\lg^2 n)$
+when the graph have no negative edge weights. \\
+\\
+Italiano et al. \cite{italiano2011improved} extended the above to allow insertions and
+deletion of edges. Specifically, they gave an algorithm, that given a planar graph $G$
+and an $r$-division,
+can update edge weights, insert edges, delete edges and report distances $\delta(u,v)$ in amortized $O(n^{2/3}\lg^{5/3}
+n)$ time. \\
+\\
+Gawrychowski and Karczmarz \cite{gawrychowski2016improved} gave the first improvement
+over FR-djikstra for computing single source shortest path in a DDG. Their main result is when $r$ is polynomial in $n$ (as is often the
+case), in which case they improve on FR-djikstra by a factor of $O(\lg^2 \lg n)$. \\
+\\
+Kaplan et al. \cite{kaplan2012submatrix} improved FR-djikstra to work with possible
+negative edge weights. The results of Fakcharoenphol and Rao for negative edge weights,
+was a data structure that could change edge weights and answer distance queries in
+amortized $O(n^{4/5}\lg^{13/5} n)$ time. Kaplan et al. give a linear sized data structure capable of supporting edge
+weight updates and distance queries in $O(n^{2/3}\lg^{5/3} n)$ time. \\
+\\
+Abboud and Dahlgaard \cite{abboud2016popular} have showed that an algorithm that can
+achieve a bound of $O(n^{1/2-\varepsilon})$ for a constant $\varepsilon>0$, would mean
+there's a subcubic algorithm for the classic APSP problem in general graphs, which shows
+little hope for finding such an algorithm.

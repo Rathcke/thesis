@@ -30,7 +30,7 @@ the number of labels $\ell$ is less than the number of vertices in the graph $n$
 allows us to construct a more compact oracle with smaller query times. Specifically, we
 can in $O(n^2)$ time construct an oracle of size $O(nl^{2/3})$ that answer queries in
 $O(\ell^{1/3})$ time. The second oracle
-in Section \ref{oracle2}, is a more technical oracle, which achieves better query times, but has no dependence
+in Section \ref{oracle2}, is a rather technical oracle, which achieves better query times, but has no dependence
 on $\ell$. This oracle does not work for all distributions of the label set $L$. It can
 in $O(n^{3/2})$ time preprocess a planar graph into an oracle requiring $O(n^{3/2})$
 space that can answer queries in $O(\text{polylog}(n))$ time. \\
@@ -38,7 +38,9 @@ In Section \ref{dynamicPlanar}, we consider the dynamic setting. In Section
 \ref{oracle3}, we extend the first oracle to handle edge
 weight updates in amortized $\tilde{O}(n^{2/3})$ time and still give exact shortest path in subsequent distance queries. In Section \ref{oracle4}, we extend the second oracle to support label
 changes in expected amortized $O(1)$ time. That is, we can change a label $\lambda_i$ to $\lambda_j$ while maintaining
-exact shortest paths.
+exact shortest paths. \\
+For each of the two oracles in the static setting, we give trade-offs between space and
+query times.
 
 \subsection{Notation}\label{notation}
 For a graph $G=(V,E)$ with label set $L=\{\lambda_0, \lambda_1, \dots, \lambda_\ell\}$, we define $|V|=n$, $|E|=m$ and $|L|=\ell$. A
