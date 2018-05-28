@@ -21,18 +21,19 @@ The second is the \textit{space} required. This is the information stored in the
 structure we have access to at query time. The last is \textit{preprocessing}. This is
 the time it takes to "handle" a graph, as to determine what information we will store
 in the data structure. \\
-\\
+
+\subsection{Thesis outline}
 This thesis focuses on vertex-labeled distance oracles in planar graphs that can provide
 exact distances between a vertex and a desired label $\lambda$. In Section \ref{exactPlanar} we
 give two oracles for the static setting. The first oracle described in Section \ref{oracle1}
 exploits the fact that
 the number of labels $\ell$ is less than the number of vertices in the graph $n$. This
 allows us to construct a more compact oracle with smaller query times. Specifically, we
-can in $O(n^2)$ time construct an oracle of size $O(nl^{2/3})$ that answer queries in
+can in $\tilde{O}(n\ell^{2/3})$ time construct an oracle of size $O(nl^{2/3})$ that answer queries in
 $O(\ell^{1/3})$ time. The second oracle
 in Section \ref{oracle2}, is a rather technical oracle, which achieves better query times, but has no dependence
 on $\ell$. This oracle does not work for all distributions of the label set $L$. It can
-in $O(n^{3/2})$ time preprocess a planar graph into an oracle requiring $O(n^{3/2})$
+in $\tilde{O}(n^{3/2})$ time preprocess a planar graph into an oracle requiring $O(n^{3/2})$
 space that can answer queries in $O(\text{polylog}(n))$ time. \\
 In Section \ref{dynamicPlanar}, we consider the dynamic setting. In Section
 \ref{oracle3}, we extend the first oracle to handle edge
