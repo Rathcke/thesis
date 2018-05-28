@@ -4,20 +4,70 @@ edge weight changes in \textbf{TODO}. We also show how to extend the oracle from
 \ref{oracle2} to support label changes in expected $O(1)$ time.
 
 \subsection{A dynamic oracle supporting edge weight updates}\label{oracle3}
-
+We now give a dynamic distance oracle that can support edge weight changes, edge
+insertions and deletion as well as answering queries in amortized $O(n^{2/3}\lg^{5/3}n)$
+time. We assume that no updates will violate the planar embedding of $G$. \\
+\\
 \indent \textit{Data structure}.
-fkpkfds
+Like the oracle in Section \ref{oracle1}, we construct an $r$-division and maintain a
+dense distance graph of all the pieces.  \\
 
+\indent \textit{Edge weight update}.
+We simply update the weight of the edge and recompute the dense distance graph in which
+the modified edge is. \\
+\\
+\indent \textit{Edge deletion}.
+A deleted edge will always happen entirely within a single piece $P$, so we simply remove
+the edge and recompute the dense distance graph of $P$. \\
+\\
+\indent \textit{Edge insertion}.
+There are two cases whenever we insert an edge. If the inserted edge is in a single piece
+$P$, we simply insert it. If the endpoints, $x$ and $y$, of the inserted edge belong to two different
+pieces, it will violate the property of an $r$-division. That is, any edge going out of
+the piece, must go through a boundary vertex. However, we can overcome with by making $x$
+a boundary vertex of the piece it belongs to. This will not increase the number of holes,
+and we recompute the dense distance graph of $P$. \\
+\\
+\indent \textit{Query}. To answer the query $Q(u,\lambda)$, we use Djikstra variant
+described in Section \ref{frdjikstra}. Since this algorithm answers the query $Q(u,v)$,
+we need to keep track of the labels on each vertex we visit and keep track of the minimum
+distance to a vertex with label $\lambda$. That is, every time we
+extract a vertex with label $\lambda$ from the global heap, we check if it the distance
+to it is a new minimum. TODO: Store distances from boundary nodes to nodes in each region
+and check total distance.
 
 \subsubsection{Analysis}
-TODO
+\textbf{Preprocessing}.
+We can compute an $r$-division in $O(n)$
+time. We then
+construct a dense distance graph, that is, we construct the graph where each edge $uv\in
+E$ has weight equal to $\delta(u,v)$ and $u$ and $v$ are both boundary nodes. We use
+Klein's multiple source shortest path algorithm \cite{klein2005multiple} to compute DDG's
+for each region of an $r$-division. For each region $R$ with $r$ nodes, we use $O(r\lg
+r)$ preprocessing to compute distances $\delta(u,v)$ in $O(\lg r)$ time where either $u$
+or $v$ is a boundary node. Since each region has $O(\sqrt{r})$ boundary nodes and $O(1)$
+holes, we can compute all distances in $O(r\lg r)$ time. Since there are $O(n/r)$
+regions, this yields a total running time of $O(nr\lg r/r)=O(n\lg r)$ to construct the
+dense distance graph. \\
+\\
+\textbf{Space}. \\
+\\
+\textbf{Query}. \\
+\\
+\textbf{Updates}.
+ Since we recompute the $r$-division after we have
+done an order of $\sqrt{r}$ operation, we know that each piece cannot at any time have
+more than $O(r)$ edges and $O(\sqrt{r})$ boundary vertices. An amortized analysis over
+all $\sqrt{r}$ operations gives us $O(\frac{n+n\lg r}{\sqrt{r}})=O(n\lg r/\sqrt{r})$ for
+each graph modification.
+
 
 \subsection{A dynamic oracle supporting label changes}\label{oracle4}
 Recall the oracle described in Section \ref{oracle2}. We now give an oracle that can
 handle label changes in $O(1)$ time. Namely, we show the following theorem if we assume
 that there are no more than $O(\sqrt{n})$ labels of polynomial size:
 \begin{thm}\label{thm3}
-  There is an oracle of requiring preprocessing time $O(n^2)$ of size $O(n^{3/2})$ that
+  There is an oracle of requiring preprocessing time $O(n^{3/2})$ of size $O(n^{3/2})$ that
   can answer distance queries in $O(\text{polylog}(n))$ time. Furthermore, it can handle
   label changes in expected amortized $O(1)$ time.
 \end{thm}

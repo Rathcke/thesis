@@ -248,8 +248,9 @@ cell the interior vertex belongs to.}
   \end{subfigure}
   \label{awvd}
 \end{figure}
-Note that we can represent $VD^*$ using $O(\sqrt{r})$ as each hole has $r$ vertices and
+As each hole has $r$ vertices and
 $\sqrt{r}$ boundary vertices. The number of vertices in $VD^*$ is $O(\sqrt{r})$ as we
 only get another vertex of degree three whenever we add another boundary vertex. Since
 $VD^*$ is also planar, it has $O(\sqrt{r})$ edges. This allows for efficient point
-location queries described and used in the oracle in Section \ref{oracle2}.
+location queries described and used in the oracle in Section \ref{oracle2}. An important
+note is that there exist a compact representation of $VD^*$ using $O(\sqrt{r})$ space.
