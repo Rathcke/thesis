@@ -138,18 +138,41 @@ When a region $R$ is split into two regions $P$ and $Q$ with a Jordan curve $C$,
 either $u$ or $v$ belongs to $C$, then we can look up the distance in $O(1)$ time since
 we have stored all distances to and from boundary nodes. If both belong to the same
 subregion, we go into that piece. The last case is when $u\in P$ and $v\in Q$. In this
-case, we can locate which hole $h$ which contains $v$. Since we have stored the
+case, we can locate the hole $h$ which contains $v$. Since we have stored the
 additively weighted Voronoi diagram $VD^*(u,h)$, we perform a point location query to
-determine the site which $v$ belongs to in $VD^*$. Note that
-$VD^*$ is a tree, so the idea is to construct a centroid decomposition of $VD^*$. To locate the
+determine the site which $v$ belongs to in $VD^*$. An important property is that Lemma
+\ref{lemma2} is true.
+\begin{lemma}\label{lemma2}
+  $VD^*$ is a tree.
+\end{lemma}
+A proof is found in Appendix \ref{a2} by Gawrychowski et al.
+\cite{gawrychowski2017better}. The idea is to construct a centroid decomposition of $VD^*$. To locate the
 Voronoi cell $v$ belongs to, it is sufficient to locate a terminal edge $e^*$ of $VD^*$, so that
 $v$ is in one of the two Voronoi cells adjacent to it. Now consider a vertex $v^*$
-adjacent to three sites. We can determine which site is closest to $v^*$ and if it is
-left or right of the shortest path from $s_i$ to $v^*$ (using preorder numbers in the
+adjacent to three cells. Let $y_j$ be the three vertices in the primal graph adjact to
+the face of $v^*$. We can determine which site is closest to $v^*$ and if it is
+left or right of the shortest path, $p_i$, from $s_i$ to $v^*$ (using preorder numbers in the
 shortest path tree). Say $s$ is the site closes to $v^*$, it is adjacent to two edges of
 $VD^*$. Depending on the position of $v$ relative (left or right) to the shortest path,
 we traverse one of the edges $e^*$. If $v$ is directly on the shortest path, we can
-deduct it belongs to the Voronoi cell of $s$ (refer to Figure \ref{vd1}). We continue this approach until we find a
+deduct it belongs to the Voronoi cell of $s$ (refer to Figure \ref{vd1}). Namely, Lemma
+\ref{lemma1} holds:
+\begin{lemma}\label{lemma1}
+  Let $s$ be the site such that $v\in \text{Vor}(s)$. If $T^*$ contains all edges of
+  $VD^*$ incident to $\text{Vor}(s)$, and if $v$ is closer to site $s_i$ than to the
+  sites $s_{i-1}$ and $s_{i+1}$ (indices modulo $3$), then one of the following is true:
+  \begin{itemize}
+    \item $s=s_i$
+    \item $v$ is right of $p_i$ and all boundary edges of $\text{Vor}(s)$ are contained
+      in in $T_i^*$
+    \item $v$ is left of $p_i$ and all boundary edges of $\text{Vor}(s)$ are contained
+      in in $T_{i+1}^*$
+  \end{itemize}
+\end{lemma}
+A proof of Lemma \ref{lemma1} by Gawrychowski et al. \cite{gawrychowski2017better} is
+found in Appendix \ref{a1}.
+
+We continue this approach until we find a
 terminal edge $e^*$, from which we can tell which cell $v$ belongs to by comparing the
 distances to both sites.
 
@@ -186,7 +209,7 @@ yields $\tilde{O}(n^{3/2})$ time. \\
 \textit{Case 2}. First consider the case where labels have polynomial size. For all
 vertices, we need to store the shortst path to these labels. By the same analysis of case 1,
 we get that it takes $\tilde{O}(n^{3/2})$ time to compute these distances as we expect at
-most $O(\sqrt{n}$ labels with polynomial size. \\
+most $O(\sqrt{n})$ labels with polynomial size. \\
 The $r$-division along with its decomposition is constructed in $O(n)$
 time \cite{klein2013structured}. Consider a step where the graph is separated into $P$ and $Q$. To compute all additively weighted Voronoi diagrams for every node $u\in
 P$, hole $h$ of $Q$, we need all

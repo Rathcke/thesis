@@ -1,8 +1,56 @@
 \section{Missing proofs}
-\subsection{$VD^*$ is a tree}
-Kyl det ind
+\subsection{$VD^*$ is a tree}\label{a2}
+\begin{lemma}
+  $VD*$ is a tree.
+\end{lemma}
+\textbf{Proof}. Suppose that $VD^*$ contains a cycle $C^*$. Since the degree of each copy
+of $h^*$ is one, the cycle does not contain $h^*$. Therefore, since all the sites are on
+the boundary of hole $h$, the vertices of $P$ enclosed by $C^*$ are in a Voronoi cell
+that contains no site, a contradiction. To prove $VD^*$ is connected, observe that in
+$VD^*$, every Voronoi cell is a face (cycle) going through $h^*$. Let $C^*$ denote this
+cycle. If $C^*$ is disconnected in $VD^*$ then $C^*$ must visit $h^*$ at least twice. But
+this implies that the cell corresponding to $C^*$ contains more than a single site,
+contradiction to our assumption. Thus, the boundary vertex of every Voronoi cell is a
+connected subgraph of $VD^*$. Since the boundaries of the cell of $s_i$ and the cell of
+$s_{i+1}$ both contain the dual of the edge $s_is_{i+1}$, it follows that the entire
+modified $VD^*$ is connected. \qed
 
-\subsection{Point location in $VD^*$}
-Throw it in
-
-\subsection{Dynamic hashing?}
+\subsection{Point location in $VD^*$}\label{a1}
+\begin{lemma}
+  Let $s$ be the site such that $v\in \text{Vor}(s)$. If $T^*$ contains all edges of
+  $VD^*$ incident to $\text{Vor}(s)$, and if $v$ is closer to site $s_i$ than to the
+  sites $s_{i-1}$ and $s_{i+1}$ (indices modulo $3$), then one of the following is true:
+  \begin{itemize}
+    \item $s=s_i$
+    \item $v$ is right of $p_i$ and all boundary edges of $\text{Vor}(s)$ are contained
+      in in $T_i^*$
+    \item $v$ is left of $p_i$ and all boundary edges of $\text{Vor}(s)$ are contained
+      in in $T_{i+1}^*$
+  \end{itemize}
+\end{lemma}
+\textbf{Proof}. In the following, let $rev(q)$ denote the reverse path of $q$.
+\indent Let $p$ be the shortest path from $s_i$ to $v$. If $p$ is a subpath of $p_i$,
+then $s=s_i$. Assume that $p$ emanates right of $p_i$ (the other case is symmetric).
+First observe that the path consisting of the concatenation $p_i \circ rev(p_{i-1})$
+intersects $VD^*$ only at $v^*$. This is because, apart from the artificial arc $y_jv^*$,
+each shortest path $p_i$ is entirely contained in the Voronoi cell of $s_i$. Therefore,
+none of the subtrees $T_{i'}^*$ contains an edge dual to $p_i \circ rev(p_{i-1})$. Since
+the path $p_i \circ rev(p_{i-1})$ starts on $h$, ends on $h$ and contain no other
+vertices of $h$. It partitions the embedding into two subgraphs, one to the right of $p_i
+\circ rev(p_{i-1})$, and the other to its left. Since $e_i^*$ is the only edge of $T^*$
+that emanates right of $p_i\circ rev(p_{i-1})$, the only edges of $T^*$ in the right
+subgraph are those of $T_i^*$. \\
+Next observe that $p$ does not cross $p_i$ (since shortest paths from the same source do
+not cross), and does not cross $p_{i-1}$ (since $v$ is closer to $s_i$ that $s_{i-1}$.
+Since we assumed $p$ emanates right of $p_i$, the only edges of $T^*$ whose duals belong
+to $p$ are edges of $T_i^*$. Consider the last edge $e^*$ of $p$ that is not strictly in
+$\text{Vor}(s)$. If $e^*$ does not exist then $p$ consists only of edges of
+$\text{Vor}(s_{i})$, so $s=s_i$. If $e^*$ does exist then it is incident to
+$\text{Vor}(s)$. By the statement of the Lemma all edges of $VD^*$ incident to
+$\text{Vor}(s)$ are in $T^*$. Therefore, by the discussion above, $e^*\in T_i^*$. We have
+established that some edge of $VD^*$ incident to $\text{Vor}(s)$ is in $T_i^*$. It
+remains to show that all such edges are in $T_i^*$. The only two Voronoi cells that are
+partitioned by the path $p_i\circ rev(p_{i-1})$ are $\text{Vor}(s_i)$ and
+$\text{Vor}(s_{i-1})$. Since $v$ is closer to $s_i$ than to $s_{i-1}$, $s\neq s_{i-1}$.
+Hence either $s=s_i$, or all the edges of $VD^*$ incident to $\text{Vor}(s)$ are in
+$T_i^*$. \qed
