@@ -222,7 +222,8 @@ compute all shortest path trees rooted at boundary vertices in $O(n^{3/2})$ time
 distances $\delta(s,u)$ in $G'$ for a boundary vertex $s$ and interior vertex $u$ are then equal
 to the distance $\delta(u,s)$ in $G$. We get the same result with $P$ and $Q$
 interchanged. This takes a total of $O(n^{3/2})$ time. The diagrams are constructed in
-$O(r)$ time and extended in $O(\sqrt{r})$ time to support point location. We also create a hash table of
+$O(r)$ time and extended in $O(\sqrt{r})$ time to support point location
+\cite{gawrychowski2017better}. We also create a hash table of
 in $O(n)$ time that can return all vertices with a given label \cite{fredman1984storing}.
 Likewise, the hash table keeping track of the size of labels takes $O(\ell)$ time to
 create. Thus, the total time for preprocessing is $\tilde{O}(n^{3/2})$. \\

@@ -30,15 +30,15 @@ query time $O(k)$ and can be constructed in $O(kmn^{1/k})$.
 \end{thm}
 \noindent
 However, the focus of this thesis is on exact distance oracles in planar graphs and the approaches used to
-approximate distances are often not applicable to obtain exact distance oracles. However,
-results in this area have near-linear space and (near-) constant query times
+approximate distances are often not applicable to obtain exact distance oracles. The
+results in the approximation approaches have near-linear space and (near-) constant query times
 \cite{klein2002preprocessing} \cite{kawarabayashi2011linear} \cite{kawarabayashi2013more}
 \cite{thorup2004compact} \cite{wulff2016approximate}.
-Furthermore, very little is known about exact vertex-labeled distance oracles -
-more so in planar graphs. A summary of distance oracles for vertex-labeled graphs in static planar graphs is given in Table
+Very little is known about exact vertex-labeled distance oracles - and more so in planar graphs. A summary of distance oracles for vertex-labeled graphs in static planar graphs is given in Table
 \ref{vertexresults}. Note that the work in the field is very limited and all known
 results approximate distances. In the next section, we outline results for exact distance
-oracles for planar graphs that are not labeled.
+oracles for planar graphs that are not labeled as these are the approaches we might be
+able to adapt in our results.
 
 \begin{table}[h!]
   \centering
@@ -104,11 +104,12 @@ space to $O(n^{3/2})$ space. They also improved the tradeoff for any space $S\in
 That is, for $S\in [n, n^{3/2}]$, they give an oracle with query time
 $\tilde{O}(n^{3/2}/S)$. For $S\in [n^{3/2}, n^2]$, they give an oracle with query time
 $O(\lg n)$. The approach is a point location structure for additively weighted Voronoi
-diagrams. They get a recursive construction using Jordan curves as separator and store a
+diagrams. They have a recursive construction using (slightly modified) Miller cycles as
+separators and store a
 Voronoi diagram for each node $u$ in the graph. The sites correspond to the boundary
 vertices and weights are the distances from $u$ to each site. For a query $Q(u,v)$, they
 locate a node $v$ in the Voronoi diagram for $u$, from which they can obtain the
-distance. Our result in Section \ref{oracle2} applies the techniques used in the work to
+distance. Our result in Section \ref{oracle2} applies the techniques used in this work to
 get efficient query times for distance oracles in vertex-labeled graphs. \\
 \\
 A summary of preprocessing, space and query times for distance oracles in planar graphs is given in Table \ref{planarresults}.
@@ -164,10 +165,11 @@ A summary of preprocessing, space and query times for distance oracles in planar
 
 \subsection{The dynamic planar case}
 The dynamic planar case is an area much less studied. Most results related to distance
-oracles are approximate results. \\
+oracles are approximate results. Exact results are all based on FR-Djikstra and it
+seems the trade-off they give is hard to beat.\\
 \\
 Fakcharoenphol and Rao \cite{fakcharoenphol2006planar} gave a data structure that could
-update edge weights in amortized $O(n^{2/3}\lg^{5/3} n)$ (and for queries). The trade-off
+update edge weights in amortized $O(n^{2/3}\lg^{7/3} n)$ (and for queries). The trade-off
 they give is $O(r)$ for update and $O(n/\sqrt{r})$ for queries. \\
 \\
 Klein \cite{klein2005multiple} gave a dynamic algorithm for which the worst case of each
@@ -197,4 +199,6 @@ weight modification and distance queries, would mean
 there's a subcubic algorithm for the classic APSP problem in general graphs, which shows
 little hope for finding such an algorithm. \\
 \\
-TODO: Intro to dynamic oracle + tables.
+In Section \ref{oracle3}, we give a dynamic distance oracle for vertex-labeled graphs,
+that can update edge weights, insert and delete edges in amortized $\tilde{O}(n^{2/3})$
+time. The query time is slightly worse requiring in the worst case $O(n)$ time.

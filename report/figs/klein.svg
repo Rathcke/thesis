@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="377.32114"
+   width="376.88168"
    height="377.27969"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="New document 1">
+   sodipodi:docname="klein.svg">
   <defs
      id="defs4">
     <marker
@@ -68,7 +68,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4"
-     inkscape:cx="174.00206"
+     inkscape:cx="173.5626"
      inkscape:cy="148.35702"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -96,7 +96,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -104,7 +104,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-234.32114,-271.01427)">
+     transform="translate(-234.7606,-271.01427)">
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
        d="m 251.67075,424.27858 46.90068,9.51217 54.39176,-30.0811 69.89395,-4.20461 37.14286,25"
@@ -220,7 +220,7 @@
            height="15"
            x="232.85715"
            y="616.64789" /></flowRegion><flowPara
-         id="flowPara6724">s<flowSpan
+         id="flowPara6724">b<flowSpan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="flowSpan6726">1</flowSpan></flowPara></flowRoot>    <flowRoot
        transform="translate(40.446678,-51.655071)"
@@ -233,7 +233,7 @@
            height="15"
            x="232.85715"
            y="616.64789" /></flowRegion><flowPara
-         id="flowPara6724-0">s<flowSpan
+         id="flowPara6724-0">b<flowSpan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="flowSpan6758">2</flowSpan></flowPara></flowRoot>    <flowRoot
        transform="translate(64.468344,-322.38043)"
@@ -246,7 +246,7 @@
            height="15"
            x="232.85715"
            y="616.64789" /></flowRegion><flowPara
-         id="flowPara6724-0-0">s<flowSpan
+         id="flowPara6724-0-0">b<flowSpan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="flowSpan6807">4</flowSpan></flowPara></flowRoot>    <flowRoot
        transform="translate(0.827002,-212.33866)"
@@ -259,7 +259,7 @@
            height="15"
            x="232.85715"
            y="616.64789" /></flowRegion><flowPara
-         id="flowPara6724-0-7">s<flowSpan
+         id="flowPara6724-0-7">b<flowSpan
    style="font-size:65.00091553%;baseline-shift:sub"
    id="flowSpan6805">3</flowSpan></flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
