@@ -1,21 +1,22 @@
 \section{Dynamic Oracles in Directed Planar Graphs}\label{dynamicPlanar}
-In this chapter we show how to extend the oracle from Section \ref{oracle1} to handle
+In this chapter we show how to construct a dynamic distance oracle to handle
 edge weight changes, edge insertion and deletions in in amortized $\tilde{O}(n^{2/3})$
 time. We also show how to extend the oracle from Section
 \ref{oracle2} to support label changes in expected $O(1)$ time.
 
 \subsection{A dynamic oracle supporting edge weight updates}\label{oracle3}
 We now give a simple dynamic distance oracle using the same approach as in FR-Djikstra that can support edge weight changes, edge
-insertions and deletions when no updates will violate the planr embedding of $G$. We following theorem:
+insertions and deletions when no updates will violate the planar embedding of $G$. We
+show the following theorem:
 \begin{thm}\label{thm4}
   There is a data structure that can be preprocessed in $O(n\lg n)$ using $O(n\lg n)$
   space that can update edge weights, insert and delete edges in in amortized
-  $O(n^{2/3}\lg^{5/3} n)$. It can also answer queries $Q(u,\lambda)$ in
+  $O(n^{2/3}\lg^{5/3} n)$. It answer queries $Q(u,\lambda)$ in
   $\tilde{O}(\min\{\text{size}(\lambda)\cdot n^{2/3}, n\})$ time.
 \end{thm}
 \indent \textit{Data structure}.
-We construct an $r$-division and maintain a dense distance graph of all the pieces. As
-described in Section \ref{frdjikstra}, we also need to construct the Monge subheaps. \\
+Given a planar graph $G$ with non-negative edge length, We construct an $r$-division and maintain a dense distance graph of all the pieces. As
+described in Section \ref{frdjikstra}, we also need to construct the Monge heaps. \\
 \\
 \indent \textit{Edge weight update}.
 We simply update the weight of the edge and, if necessary, recompute the dense distance graph in which
@@ -27,9 +28,9 @@ the edge and if necessary, we recompute the dense distance graph of $P$. \\
 \\
 \indent \textit{Edge insertion}.
 There are two cases whenever we insert an edge. If the inserted edge is in a single piece
-$P$, we simply insert it. If the endpoints, $x$ and $y$, of the inserted edge belong to two different
+$P$, we simply insert it. If the endpoints, $u$ and $v$, of the inserted edge belong to two different
 pieces, it will violate the property of an $r$-division. That is, any edge going out of
-the piece, must go through a boundary vertex. However, we can overcome with by making $x$
+the piece, must go through a boundary vertex. However, we can overcome with by making $u$
 a boundary vertex of the piece it belongs to. This will not increase the number of holes,
 and we recompute the dense distance graph of $P$ if needed. \\
 \\
@@ -41,7 +42,7 @@ When we have completed the fast Djikstra step, we have distances to the boundary
 of the piece, $P_v$, that $v$ belongs to, and we can compute distances from the boundary
 vertices of $P_v$ to $v$. If $P_u=P_v$, then we also compute the shortest path from $u$
 to $v$ within the piece and we pick the shortest one. \\
-In case $\text{size}(\lambda)$ is $\Omega(n^{1/3}$, we simply run Henzinger et al.
+In case $\text{size}(\lambda)$ is $\Omega(n^{1/3})$, we simply run Henzinger et al.
 \cite{henzinger1997faster} algorithm the original graph $G$ and pick the minimal distance
 found to a vertex with label $\lambda$.
 
@@ -60,10 +61,11 @@ regions, this yields a total running time of $O(nr\lg r/r)=O(n\lg r)$ to constru
 dense distance graph. Using the implementation of Kaplan et al.
 \cite{kaplan2012submatrix}, we can construct the Monge heaps in $O(n\lg n)$ time.\\
 \\
-\textbf{Space}. The dense distance graph has $O(n/\sqrt{r})$ vertices and $O(r)$ edge
+\textbf{Space}. The dense distance graph has $O(n/\sqrt{r})$ vertices and $O(r)$ edges
 per piece, which is $O(n)$ edges overall. So representing the dense distance graphs takes
 $O(n)$ space. Each vertex occurs in $O(\lg n)$ different heaps and each edge is in one
-data structure. The Monge heaps dominates the total space usage which is $O(n\lg n)$. \\
+data structure. The Monge heaps dominates the total space usage which is $O(n\lg n)$
+\cite{kaplan2012submatrix}. \\
 \\
 \textbf{Updates}.
  Since we recompute the $r$-division after we have
@@ -72,7 +74,7 @@ more than $O(r)$ edges and $O(\sqrt{r})$ boundary vertices. An amortized analysi
 all $\sqrt{r}$ operations gives us $O(\frac{n+n\lg r}{\sqrt{r}})=O(n\lg r/\sqrt{r})$ for
 each graph modification. \\
 \\
-\textbf{Query}. For each query $Q(u,v)$, we know that FR-Djikstra step, i.e. computing
+\textbf{Query}. For each query $Q(u,v)$, we know that each FR-Djikstra step, i.e. computing
 the shortest paths in the dense distance graph, requires $\tilde{O}(n/\sqrt{r})$ time.
 Computing distances within a piece requires $O(r)$ time using the algorithm of Henzinger
 et al. \cite{henzinger1997faster}. Thus the total time for the query $Q(u,\lambda)$ is
@@ -85,14 +87,15 @@ If we pick $r=n^{2/3}$, we get Theorem \ref{thm4}.
 \subsection{A dynamic oracle supporting label changes}\label{oracle4}
 Recall the oracle described in Section \ref{oracle2}. We now give an oracle that can
 handle label changes in $O(1)$ time. Namely, we show the following theorem if we assume
-that there are no more than $O(\sqrt{n})$ labels of polynomial size:
+that there are no more than $O(\sqrt{n})$ labels of polynomial size and a label change
+does not change this:
 \begin{thm}\label{thm3}
   There is an oracle of requiring preprocessing time $O(n^{3/2})$ of size $O(n^{3/2})$ that
   can answer distance queries in $O(\text{polylog}(n))$ time. Furthermore, it can handle
   label changes in expected amortized $O(1)$ time.
 \end{thm}
 \textit{Data structure}.
-The data structure is constructed almost the same way as the one described in Section
+We are given a directed planar graph $G$ with non-negative edge length. The data structure is constructed almost the same way as the one described in Section
 \ref{oracle2}, but we modify the hash table used in it and add another one. The added
 hash table is used for a simple lookup of what label a vertex has. That is, we use the
 vertex number as key and store the label as the information. Note that we can pick our
@@ -105,8 +108,8 @@ We call this hash table for $h_2$. \\
 \indent\textit{Update}.
 Every time we make a label change, we need to lookup the label in $h_1$ and change
 it to the new one. However, since we also need to be able to retrieve all vertices given some label
-$\lambda$ (which we obtain from $h_1$) in the query, we need the other hash table to adjust accordingly. This means
-removing the vertex from the hash table and inserting in its new hash table location.
+$\lambda$ (which we obtain from $h_2$) in the query, we need the other hash table to adjust accordingly. This means
+removing the vertex from the hash table and inserting in its new location in the hash table.
 
 \subsubsection{Analysis}
 Preprocessing, space and query time follows from the analysis in Section
@@ -116,13 +119,13 @@ requiring $O(n)$ space, and since each bucket contains a single element, deletio
 record  can be done in $O(1)$ time and insertion (of a new label) can be done $O(1)$ time
 too. \\
 \\
-Constructing $h_2$ requires a little more thinking. Each bucket can be expected to
+Constructing $h_2$ requires a little more. Each bucket can be expected to
 have $n/\ell$ elements, but in worst case they can be up to $O(n)$ in size. Therefore we
 need a \textit{dynamic perfect hashing} scheme that supports $O(1)$ lookup and
 amortized expected insertion and deletion in constant time. Dietzfelbinger et al.
-\cite{dietzfelbinger1994dynamic} introduced a randomized algorithm achieving this. The idea is to use a
+\cite{dietzfelbinger1994dynamic} introduced an algorithm achieving this. The idea is to use a
 primary hash function to construct buckets containing all vertices with the same label.
-These buckets are dynamic arrays. We use hashing with chaining for the vertices in each bucket to ensure we have expected lookup in $O(1)$ time. The algorithm keeps track numbers of how many elements are in
+These buckets are dynamic arrays. We use hashing with chaining for the vertices in each bucket to ensure we have expected lookup in $O(1)$ time. The algorithm keeps track of how many elements are in
 each bucket and we refer to these numbers as $b_i$. Each bucket is assigned $s_i$ space,
 where $s_i=2b_i$. For each bucket, there is a specified threshold $t_i=(1+c)b_i$ (in this
 case, we use $c=1$). When $b_i$ exceeds $t_i$ or falls below
@@ -149,4 +152,3 @@ each array. The arrays have size $s_i$ which all have size $O(b_i)$, so we get s
    &=O(n) \comment{As $\sum_i b_i = n$}
 \end{align*}
 This will yield the result in Theorem \ref{thm3} 
-TODO: Label changes to size $O(\sqrt{n})$ and figure???

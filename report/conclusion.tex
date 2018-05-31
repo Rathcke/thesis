@@ -7,23 +7,23 @@ $\sqrt{n}$, or when the desired space allocation is $o(n^{3/2})$. The other orac
 Section \ref{oracle2} beats
 the space-query product of the trivial solution and it matches the best theoretical
 trade-offs for distance oracles in planar graph that are not vertex-labeled. Even though
-it does not work for all distributions of $L$, it arguably works for most realistic
+it does not work for all distributions of $L$, it arguably works for many realistic
 cases. \\
 We also gave two distance oracles in the dynamic setting. The first result in Section
 \ref{oracle3} tried to match the
-trade-offs given by the works based upon FR-djikstra. Previous works have not been able
+trade-offs given by the works based upon FR-Djikstra. Previous works have not been able
 to reduce the trade-off of FR-Djikstra with more than a factor of $O(\lg^2\lg n)$, but
-have been able to produce oracles that extend it with more operations with the same
-update times. We have shown it can be extended to vertex-labeled planar graphs. The
-oracle in Section \ref{oracle4} supports the classic update in vertex-labeled graph - a
+have been able to produce oracles that extend it with other operations with the same
+update times as well as handling negative edge-lengths. We have shown it can be extended to vertex-labeled planar graphs. The
+oracle in Section \ref{oracle4} supports the classic update in vertex-labeled graph - the
 label change. We managed to do this in expected constant time, though without the
-assumption on the distribution of $L$, the query time will suffer.
+assumption on the distribution of $L$, the update time will suffer.
 
-\subsection{Reflection and future works}
+\subsection{Reflections and future works}
 The obvious improvement would be remove the assumption on the distribution of $L$. I
 tried different strategies. My first observation was that we wanted, given a query
 $Q(u,\lambda)$, to find the nearest $\lambda$-labeled vertex to $u$. This boils down to
-the nearest neighbor problem in graphs. If we could be able to construct a data structure
+the nearest neighbor problem in planar graphs (known by many names). If we could be able to construct a data structure
 of size $O(n^{3/2})$ that could answer this problem in $O(\lg n)$ time, the overall time
 bounds would not be affected. However, it seemed that for a single label, this would
 require linear space, which would add up to $O(n\ell)$ space for all labels. Most
@@ -33,7 +33,7 @@ nearest neighbour search in general metrics
 However, all of them are approximate results and often work under certain conditions
 (growth-restricted, low doubling dimension etc.). One might hope to uncover an exact NNS
 structure or even one that can return the $k$ nearest neighbours for
-$k=O(\text{polylog}(n))$ as this would be sufficient to fix the gap in our distance
+$k=O(\text{polylog}(n))$ as this would be sufficient to fix the gap in the distance
 oracle. \\
 Besides mending current results, one could research if the results could extend to related
 families of graphs. In particular, the $O(n)$-separable graphs, bounded genus graphs,
