@@ -29,8 +29,19 @@ continue to decompose a piece on the previous level of the decomposition.
 \\
 The $r$-division we will use in this thesis (unless described otherwise) is the one by Klein et al.
 \cite{klein2013structured} with a constant number of
-holes with connected pieces, that provides a decomposition tree and can be computed in linear time. An
-illustration of the components in an $r$-division is shown in Figure \ref{rdiv}. We give
+holes with connected pieces, that provides a decomposition tree and can be computed in
+linear time. That $r$-division guarantees the following:
+\begin{lemma}\label{rdivlemma}
+  The constructed $r$-division ensures that (i) each piece has $O(1)$ holes, (ii) the
+  number of vertices in a piece on the $k$-th level in the decomposition is
+  $O(n/c_1^{k/3})$ for some constant $c_1>1$, (iii) the number of boundary nodes in a
+  piece on the $k$-th level in the decomposition is $O(\sqrt{n}/c_2^{k/3})$ for some
+  constant $c_2>1$.
+\end{lemma}
+\noindent A proof of the Lemma can be found in \cite{klein2013structured}. \\
+Summing over all levels of the decomposition gives us that the total number of boundary
+vertices is $O(\sqrt{n})$.\\
+An illustration of the components in an $r$-division is shown in Figure \ref{rdiv}. We give
 a result based on an $r$-division in Section \ref{oracle1}.
 
 \begin{figure}[h!]
