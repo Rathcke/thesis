@@ -186,17 +186,18 @@ distances to both sites.
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.66\textwidth]{figs/vd1.pdf}
-  \caption{Illustration of how a query $Q(u,v)$ works. First, we determine which hole $v$
-  belongs to (called P here). We then traverse our centroid decomposition of the
-  additively weighted Voronoi diagram $VD^*(u,P)$ (in blue) starting at the vertex $v^*$ given in
-red. We compare the distances from $u$ to $v$ through the three sites ($s_2$, $s_4$,
-$s_5$). Say the shortest distance is through $s_4$, we need to locate $v$ relatively to
-the shortest path from $s_4$ to $v^*$ (in green). Since $v$ is
+  \caption{Illustration of how a query $Q(u,v)$ works. First, we determine which hole $h$
+    that $v$
+  belongs to. We then traverse our centroid decomposition of the
+  additively weighted Voronoi diagram $VD^*(u,h)$ (in blue) starting at the vertex $v^*$ given in
+red. We compare the distances from $u$ to $v$ through the three sites ($b_2$, $b_4$,
+$b_5$). Say the shortest distance is through $b_4$, we need to locate $v$ relatively to
+the shortest path from $b_4$ to $v^*$ (in green). Since $v$ is
 located right of this path, we traverse the edge given in red. Again, we compare the
-distances from $u$ to $v$ through the three sites $s_2$, $s_3$ and $s_4$. The shortest
-path goes through $s_3$ and $v$ is located left of the shortest path from $s_3$ to the
+distances from $u$ to $v$ through the three sites $b_2$, $b_3$ and $b_4$. The shortest
+path goes through $b_3$ and $v$ is located left of the shortest path from $b_3$ to the
 Voronoi vertex, so again we traverse the corresponding edge. Since this is a terminal
-edge, we can determine that $v$ belongs to the Voronoi cell of $s_3$.}
+edge, we can determine that $v$ belongs to the Voronoi cell of $b_3$.}
     \label{vd1}
 \end{figure}
 
