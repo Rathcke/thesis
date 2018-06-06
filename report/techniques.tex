@@ -11,7 +11,7 @@ separator of size $O(\sqrt{n})$ such that each new component contains at most $2
 vertices. He further showed that such a separator can be found in $O(n)$ time. \\
 Frederickson \cite{frederickson1987fast} introduced the \textit{$r$-division} for planar
 graphs. Given an $r\in (0,n)$, the division is a decomposition of the graph into
-$O(n/r)$ edge-induced subgraphs (\textit{pieces}), where each piece contains $O(r)$ vertices and $O(\sqrt{r})$ \textit{boundary vertices}. A
+$O(n/r)$ edge-induced and connected subgraphs (\textit{pieces} or \textit{regions}), where each piece contains $O(r)$ vertices and $O(\sqrt{r})$ \textit{boundary vertices}. A
 boundary vertex is a vertex that belongs to multiple pieces, while an \textit{interior
 vertex} is one that belongs to a single piece. Frederickson showed that
 such a division exists for any planar graphs and can be found in $O(n\lg n)$ time. This
@@ -27,16 +27,21 @@ constant number of holes. It also produces a decomposition tree representing a r
 decomposition of $G$. Particularly, given an increasing sequence $\overline{r}=(r_1,r_2,\dots)$, we
 continue to decompose a piece on the previous level of the decomposition.
 \\
-The $r$-division we will use in this thesis (unless described otherwise) is the one by Klein et al.
+The $r$-division we will use in this thesis is the one by Klein et al.
 \cite{klein2013structured} with a constant number of
 holes with connected pieces, that provides a decomposition tree and can be computed in
-linear time. That $r$-division guarantees the following:
+linear time. It uses modified cycle separators to guarantee the $r$-division has the
+following properties:
 \begin{lemma}\label{rdivlemma}
-  The constructed $r$-division ensures that (i) each piece has $O(1)$ holes, (ii) the
-  number of vertices in a piece on the $k$-th level in the decomposition is
-  $O(n/c_1^{k/3})$ for some constant $c_1>1$, (iii) the number of boundary nodes in a
+  The constructed $r$-division ensures that
+  \begin{enumerate}
+    \item each piece has $O(1)$ holes,
+    \item the number of vertices in a piece on the $k$-th level in the decomposition is
+  $O(n/c_1^{k/3})$ for some constant $c_1>1$,
+    \item the number of boundary nodes in a
   piece on the $k$-th level in the decomposition is $O(\sqrt{n}/c_2^{k/3})$ for some
   constant $c_2>1$.
+  \end{enumerate}
 \end{lemma}
 \noindent A proof of the Lemma can be found in \cite{klein2013structured}. \\
 Summing over all levels of the decomposition gives us that the total number of boundary
@@ -92,10 +97,14 @@ imply a shorter path from $w$ to $v$.}
 \subsection{The dense distance graph}
 A \textit{dense distance graph} or DDG is defined over a decomposition of a planar
 graph. Throughout this thesis, the decomposition is the $r$-division of $G$. It is the non-planar graph $G'$ of $G$ where there is an edge $uv$ if both $u$ and
-$v$ are boundary vertices with weight equal to the shortest path between the vertices within
+$v$ are boundary vertices of the same piece with weight equal to the shortest path between the vertices within
 the piece(s) they share. The space requirement for storing the matrix of all distances between boundary
 vertices in each piece is $O(\sqrt{r}^2)=O(r)$. We can construct it using Klein's multiple source shortest
-path algorithm in $O(r\lg r)$ time since each piece has $O(1)$ holes.
+path algorithm in $O(r\lg r)$ time since each piece has $O(1)$ holes. To see this, note
+that because there are $O(\sqrt{r})$ boundary vertices and $O(1)$ holes, we need to
+compute shortest paths for each boundary vertex to $O(\sqrt{r})$ other boundary vertices.
+For one boundary vertex, this takes $O(\sqrt{r}\lg r)$ time. For all boundary vertices in
+one piece, it takes $O(r\lg r)$ time. \\
 Summing over all $O(n/r)$ pieces, the total space required is $O(n)$. Likewise, calculating all
 distances in all pieces requires $O(nr\lg r/r)=O(n\lg r)$ time.
 
@@ -115,7 +124,7 @@ then for all boundary vertices $v$ that are on  counter clockwise path on the fa
 (according to Figure \ref{monge}), then $d(v,x)\geq d(u,x)$. To see this, note that there
 is a vertex $w$ on path from $u$ to $y$ that the path $v$ to $x$ must cross. Since
 $d(u,y)\leq d(v,y)$, it implies that $d(u,w)\leq d(v,w)$. It is important that all
-vertices are on the boundary of the face as it is otherwise not true (as indicated by
+vertices are on the boundary of the infinite face as it is otherwise not true (as indicated by
 Figure \ref{monge2}). \\
 The \textit{Monge matching problem} is finding the parent $p(v)\in A$ for all $v\in B$,
 so that $d(p(v), v)\leq d(u,v)$ for any $u\in A$. The \textit{minimum Monge matching} is
@@ -242,9 +251,9 @@ can run Djikstra in $O(\beta\lg \beta\lg \sqrt{r})$ time.
 A point location method used in the oracle described in Section \ref{oracle2} is based on
 \textit{additively weighted Voronoi diagrams} which is what allows us to perform faster
 queries. \\
-When we find a Jordan curve which split the region $R$ into subregions $P$ and $Q$, we
-define an additively weighted Voronoi diagram from a vertex $u\in P$ and a hole
-$h$ in $Q$. We write $VD(u,h)$ to denote the diagram. The sites of the Voronoi diagram
+When we find a Jordan curve $C$ which split the piece $P$ into subregions $Q$ and $R$, we
+define an additively weighted Voronoi diagram from a vertex $u\in Q$ and a hole
+$h$ in $R$. We write $VD(u,h)$ to denote the diagram. The sites of the Voronoi diagram
 are the boundary vertices of the hole $h$. A vertex $v$ in the interior of $h$ belongs to
 the Voronoi cell given by boundary node $b_i$ (site) if the distance from $u$ to $b_i$
 plus the distance from $b_i$ to $v$ is less
@@ -283,4 +292,4 @@ As each hole has $r$ vertices and
 $\sqrt{r}$ boundary vertices. The number of vertices in $VD^*$ is $O(\sqrt{r})$ as we
 only get another vertex of degree three whenever we add another boundary vertex. Since
 $VD^*$ is also planar, it has $O(\sqrt{r})$ edges. An important
-note is that there exist a compact representation of $VD^*$ using $O(\sqrt{r})$ space.
+feature of the diagram is that there exist a compact representation of $VD^*$ using $O(\sqrt{r})$ space.

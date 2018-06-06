@@ -15,7 +15,7 @@ has a label $\lambda\in L$ (e.g. "gas
 station" or "supermarket") and the oracles answer shortest paths $\delta(u,\lambda)$ between a
 vertex $u$ and
 the nearest vertex with the given label $\lambda$. This generalizes the normal distance oracle problem since when each node is
-associated with a unique label, it is the same problem. \\
+associated with a unique label, they are equivalent. \\
 When analysing the performance of
 distance oracles, we typically look at three things. The first is \textit{query} time.
 This is the amount of time it takes to return the shortest path between two given
@@ -23,6 +23,12 @@ vertices or the shortest path between a vertex and the nearest $\lambda$-labeled
 The second is the \textit{space} required. This is the information stored in the data
 structure we have access to at query time. The last is \textit{preprocessing}. This is
 the time it takes to build the data structure. \\
+One might also study the same problem in a dynamic setting, where the graph is prone to
+other operations such as edge weight changes, edge insertion and/or deletions. Another
+update specific to vertex-labeled graphs is the update of a label. As motivation,
+consider the cases when new roads are built, torn down or when a library
+becomes a restaurant. In this case, we also measure the performance in \textit{update}
+time, which is the time it takes to adjust the distance oracle to reflect the change.
 
 \subsection{Thesis outline}
 This thesis focuses on vertex-labeled distance oracles in directed planar graphs that can provide
@@ -55,7 +61,9 @@ we define $|V|=n$, $|E|=m$ and $|L|=\ell$. \\
 A distance $\delta(v,\lambda)$ for a $v\in V$ and $\lambda\in L$ is the distance between
 the node $v$ and the nearest $\lambda$-labeled node. Likewise, we use $\delta(u,v)$ to denote
 the minimal distance between two nodes $u,v\in V$. When we write $d(u,\lambda)$ or
-$d(u,v)$, we do not necessarily mean the shortest path, but just \textit{a} distance. \\
+$d(u,v)$, we do not necessarily mean the shortest path, but just \textit{a} distance.
+This is used when the measured distance is not in the entire graph $G$, but just the shortest
+path in a subgraph of $G$. \\
 \\
 We use $Q(v,\lambda)$ or $Q(u,v)$ to denote the queries "What is $\delta(v,\lambda)$?" or
 "What is $\delta(u,v)$?" respectively. \\

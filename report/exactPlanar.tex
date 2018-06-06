@@ -11,8 +11,9 @@ that does not depend on $\ell$, but has better query times in Section \ref{oracl
 We cannot directly adapt the approach used in \cite{cohen2017fast} and \cite{gawrychowski2017better} to work
 for the vertex-labeled case as it requires us to know the target vertex and there might
 be many vertices with the same label. We can however use the number of labels $\ell$ to
-construct an efficient distance oracle. We give the following result built on top of an
-$r$-division:
+construct an efficient distance oracle. The idea is store shortest paths for only a subset of the vertices (the boundary vertices of an $r$-division). In the query step, we only need to find the minimal
+distance of the shortest paths that pass through the boundary vertices. We give the
+following result.
 \begin{thm}\label{thm1}
   There is a distance oracle with space $O(n\ell^{2/3)})$, query time $O(\ell^{1/3})$ and
   preprocessing time $\tilde{O}(n\ell^{2/3})$.
@@ -23,7 +24,8 @@ $\ell$. We start by constructing an $r$-division. Remember, we use the $r$-divis
 \cite{klein2013structured}, which guarantees a constant number of holes in each region
 and ensures the total number of boundary vertices is $O(n/\sqrt{r})$. Each piece $P$ then
 has at most $r$ vertices and $O(\sqrt{r})$
-boundary vertices. For each boundary node $b$, we store the shortest distance $\delta(b,\lambda)$
+boundary vertices. For each boundary node $b_i$, we store the shortest distance
+$\delta(b_i,\lambda)$
 for all $\lambda \in L$ in a hash table. For all vertices inside $P$, we store the shortest
 distance to all boundary nodes as well as the shortest distance to all labels present in
 $P$ in a hash table. \\
@@ -58,11 +60,11 @@ store the distances to all boundary vertices and to all labels within that piece
 gives us $O(nr)$ space as we can potentially store the distances to all vertices in a
 piece $P$. This gives us a total of $O(\frac{n}{\sqrt{r}}\ell+nr)$ space. \\
 \\
-\textbf{Query}. The query $Q(u,\lambda)$ for a boundary vertex $u$ can be looked up in its hash table in
+\textbf{Query}. The query $Q(b,\lambda)$ for a boundary vertex $b$ can be looked up in its hash table in
 $O(1)$ time. For the query $Q(v,\lambda)$ for a vertex $v$ not on the boundary, we have
 to find the minimal distance $\delta(v,b_i)+\delta(b_i,\lambda)$ for all boundary
-vertices, compare it to the distance $\delta(v,\lambda)$ stored in the hash table for $v$
-and return the minimum of these two distances. Thus the query time is bounded by the
+vertices in the same piece as $v$, compare it to the distance $\delta(v,\lambda)$ stored in the hash table for $v$
+and return the minimal of these two distances. Thus the query time is bounded by the
 number of boundary vertices which is $O(\sqrt{r})$. \\
 \\
 We have a simple trade-off, since we can pick $r$ to be sufficiently small to
@@ -71,16 +73,26 @@ $r=\ell^{2/3}$ and for $n$ sufficiently large, gives us $\tilde{O}(n\ell^{2/3})$
 
 \subsection{A distance oracle with better query times}\label{oracle2}
 We now present a distance oracle which is actually multiple data structures that perform
-well depending on $\ell$ and the number of each $\lambda\in L$. We will refer to the
-number of a given label by saying the \textit{size} of that label.
-Under the assumption that $G$ does not have $\omega(\sqrt{n})$ labels of polynomial size, we can show the following theorem:
+well depending on $\ell$ and the size of each $\lambda\in L$. We will refer to the
+number of a given label by saying the \textit{size} of that label. We can show the following theorem:
 \begin{thm}\label{thm2}
-  There is a distance oracle with space $O(n^{3/2})$, query time $O(\text{polylog}(n))$ and
+  Under the assumption that $G$ does not have $\omega(\sqrt{n})$ labels of polynomial
+  size, there is a distance oracle with space $O(n^{3/2})$, query time $O(\text{polylog}(n))$ and
   preprocessing time $\tilde{O}(n^{3/2})$.
 \end{thm}
 We assume shortest paths are unique, which can be ensured
 in linear time \cite{motwani2010randomized}\cite{mulmuley1987matching}. We also assume
-the graph is triangulated, which we can do by adding edges with infinite length.\
+the graph is triangulated, which we can do by adding edges with infinite length. \\
+Before diving into the data structure, we give the intuition behind the oracle. At high
+level, when $k=\text{size}(\lambda)$ for some label $\lambda$ is sufficiently small, we
+can perform $k$ queries of the type $Q(u,v)$, where each query takes $O(\lg n)$ time.
+When label sizes $k$ are too large (which we know at preprocessing stage), we store the
+shortest paths to these labels directly. \\
+Computing the shortest paths between two vertices $u$ and $v$ boils down to finding the
+hole $h$ that $v$ is contained in and afterwards finding the site (or boundary vertex) that $v$ belongs to in the stored additively weighted Voronoi
+diagram $VD^*(u,h)$. It takes $O(\lg n)$ time to locate the hole $h$ and $O(\lg
+\sqrt{r})$ to find the site $v$ belongs to. Since we have stored distances to all
+vertices for all sites, we can find $\delta(u,v)$ in $O(1)$ time.
 
 \subsubsection{The data structure}
 Given the directed planar graph $G$ with non-negative edge length and a number of labels $\ell$ with
@@ -91,25 +103,32 @@ data structure into the following two cases: \\
 labels in the graph. \\
 \\
 \textbf{Case 2:} If $\ell\in (\varepsilon_1, n]$ and there are $\varepsilon_1$ number of labels that have
-polynomial size, we employ two different strategies. First of all, for all labels
+polynomial size. \\
+First of all, for all labels
 $\lambda\in L$, we
-store $\text{size}(\lambda)$ in a hash table. For labels of size polynomial
-$\lambda \in \mathcal{L} \subset L$, we store the
+store $\text{size}(\lambda)$ in a hash table. We also store, for each label $\lambda_i$,
+a hash table that contains all vertices given a label $\lambda_i$. \\
+Now define $\mathcal{L}$ as the set of labels
+with polynomial size:
+\begin{align*}
+  \mathcal{L}=\{\lambda\ |\ \text{size}(\lambda)=O(n^\varepsilon)\}
+\end{align*}
+for $\varepsilon>0$. We store the
 shortest paths $\delta(v, \lambda)$ from all vertices $v\in V$ and labels $\lambda\in
 \mathcal{L}$ in a hash table. Otherwise, for labels that have size
 $\varepsilon_2$, we
 use an approach similar to that described in \cite{cohen2017fast} and
 \cite{gawrychowski2017better}: \\
 \indent The processing stage consists of constructing a $r$-division,
-giving us a decomposition tree of $G$. We also store a hash table that, given a key
-$\lambda$, returns all vertices with that label. For all pieces $P=(V_P, E_P)$ at some
-step in the decomposition, we shortest path trees for all boundary vertices of $P$.
+giving us a decomposition tree of $G$. For all pieces $P=(V_P, E_P)$ at some
+step in the decomposition, we store shortest path trees for all boundary vertices of $P$.
 Additionally, we store distances $\delta(u,b_i)$ in the entire graph $G$ for all $u\in V$ and boundary vertices $b_i$. Now
 consider the step where $P$ is split into two smaller pieces $Q$ and $R$. For each
 vertex, we record if it belongs to $Q$ or $R$ or the separator $C$. Recall the definition of an
 additively weighted Voronoi diagram from Section \ref{techniques}. For all vertices $u\in
 Q$ and hole $h$ of $R$, we store an additively weighted
-Voronoi diagram $VD^*(u,h)$. We store the
+Voronoi diagram $VD^*(u,h)$. We will explain the details of the diagram when we explain
+the query in Section \ref{oracle2query}. We store the
 same information with $Q$ and $R$ interchanged. \\
 In order to explain how the
 query works, for each vertex $v*$ of $VD^*$, we add three artificial edges with zero
@@ -131,7 +150,7 @@ face corresponding to $v^*$ is given in grey.}
     \label{vd2}
 \end{figure}
 
-\subsubsection{Query}
+\subsubsection{Query}\label{oracle2query}
 Depending on the case that $G$ falls under, we do the following for the
 query $Q(v, \lambda)$: \\
 \\
@@ -148,20 +167,22 @@ we have stored all distances to and from boundary vertices. If both belong to th
 smaller piece, we go into that piece. The last case is when $u\in P$ and $v\in Q$. In this
 case, we can locate the hole $h$ which contains $v$. Since we have stored the
 additively weighted Voronoi diagram $VD^*(u,h)$, we perform a point location query to
-determine the site which $v$ belongs to in $VD^*$. An important property of $VD^*$is that Lemma
+determine the site which $v$ belongs to in $VD^*$. An important property of $VD^*$ is that Lemma
 \ref{lemma2} holds.
 \begin{lemma}\label{lemma2}
   $VD^*$ is a tree.
 \end{lemma}
 A proof is found in Appendix \ref{a2} by Gawrychowski et al.
-\cite{gawrychowski2017better}. The idea is to construct a centroid decomposition of $VD^*$. To locate the
+\cite{gawrychowski2017better}.  \\
+The idea is then to construct a centroid decomposition of $VD^*$. To locate the
 Voronoi cell $v$ belongs to, it is sufficient to locate a terminal edge $e^*$ of $VD^*$, so that
 $v$ is in one of the two Voronoi cells adjacent to it. Now consider a vertex $v^*$
-adjacent to three cells. Let $y_j$ be the three vertices in the primal graph adjact to
+adjacent to three cells. Let $y_j$ be the three vertices in the primal graph adjacent to
 the face of $v^*$. We can determine in $O(1)$ time which site is closest to $v^*$ and if it is
 left or right of the shortest path, $p_i$, from site $s_i$ to $v^*$ (using preorder
-numbers and a LCA data structure \cite{bender2000lca}). Say $s$ is the site closest to $v^*$, it is adjacent to two edges of
-$VD^*$. Depending on the position of $v$ relative (left or right) to the shortest path,
+numbers and a LCA data structure \cite{bender2000lca}). Say $s$ is the site closest to
+$v^*$, the boundary of the cell contains two edges of
+$VD^*$ that we can traverse from $v^*$. Depending on the position of $v$ relative (left or right) to the shortest path,
 we traverse one of the edges. If $v$ is directly on the shortest path, we can
 deduct it belongs to the Voronoi cell of $s$ (refer to Figure \ref{vd1}). Namely, Lemma
 \ref{lemma1} holds:
@@ -218,12 +239,12 @@ yields $\tilde{O}(n^{3/2})$ preprocessing time. \\
 vertices, we need to store the shortest path to these labels. By the same analysis of case 1,
 we get that it takes $\tilde{O}(n^{3/2})$ time to compute these distances as we expect at
 most $O(\sqrt{n})$ labels with polynomial size. \\
-The $r$-division along with its decomposition is constructed in $O(n)$
+The $r$-division along with its decomposition tree is constructed in $O(n)$
 time \cite{klein2013structured}. Consider a step where the graph is separated into $Q$
 and $R$. To compute all additively weighted Voronoi diagrams for every node $u\in
 Q$, hole $h$ of $R$, we need all
 shortest path to and from boundary vertices of $h$. Lemma \ref{rdivlemma} tells us that there are
-$O(\sqrt{n})$ boundary vertices in total, so computing the shortest path trees for all
+$O(\sqrt{n})$ boundary vertices at any level in the decomposition, so computing the shortest path trees for all
 boundary vertices can be done in $O(n^{3/2})$ time. To compute all shortest path \textit{to} boundary vertices, we construct the graph
 $G'$, which is the graph obtained by changing the direction of all edges of $G$. Since
 $G$ is planar, it has $O(n)$ edges, so this can be achieved in $O(n)$ time. We then
@@ -253,7 +274,7 @@ boundary vertices $b$. Since the number of boundary vertices is $O(\sqrt{n})$, t
 requires a total of $O(n^{3/2})$ space. \\
 Lastly, we need to store additively weighted Voronoi diagrams for a vertex $u\in Q$ and
 hole $h$ of $R$. Recall that we can store an additively weighted Voronoi diagrams in
-$O(\sqrt{r})$ space. Since we store $O(1)$ diagrams (because each region has $O(1)$ holes) for
+$O(\sqrt{r})$ space. Since we store $O(1)$ diagrams (because each piece has $O(1)$ holes) for
 all vertices in the entire graph $G$, this requires a total space of $O(n\sqrt{r})$. The
 same is true with $Q$ and $R$ interchanged. \\
 Thus the total space required is $O(n^{3/2}+\ell+n\lg n+n\sqrt{r})=O(n^{3/2})$. \\
@@ -265,9 +286,10 @@ Thus the total space required is $O(n^{3/2}+\ell+n\lg n+n\sqrt{r})=O(n^{3/2})$. 
 described
 above takes $O(\lg n)$ time as we descend into pieces in the recursive decomposition with depth
 $O(\lg n)$. Since the trees constructed for each additively weighted Voronoi diagram has
-depth $O(\lg \sqrt{r})$ and $r<n$, this term doesn't add to the query time. However,
+depth $O(\lg \sqrt{r})$ and $r<n$, this term does not add to the query time. However,
 there can be up to $O(\text{polylog}(n))$ vertices of a given label, which means we have
-to do $O(\text{polylog}(n))$ different point locations and extract the minimum. This
+to do $O(\text{polylog}(n))$ different point locations and take the minimal distance
+found. This
 yields a total query time of $O(\text{polylog}(n))$. \\
 \\
 The data structure and analysis of case 1 gives combined with the data structure and
@@ -296,7 +318,6 @@ allocation $S$ is in the range $[n,n^{3/2})$ or if $\ell=o(\sqrt{n})$, we use th
   the extreme cases, we have $O(n\ell)$ space or $O(\sqrt{n})$ query time.  \\
 Note that the space-query product is no better than the trivial $n\ell$ solution where we
 store shortest paths from all vertices to all labels in a matrix and have $O(1)$ queries. \\
-\\
 The trade-off for the second oracle with the
 assumption on labels is, given a desired space allocation $S$ when $S\geq n^{3/2}$, we get a
 query time of $O(\text{polylog}(n))$ with preprocessing $\tilde{O}(n^{3/2})$. In this
