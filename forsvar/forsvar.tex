@@ -40,17 +40,17 @@
   \end{block}
   \begin{block}{Theorem 2}
     \small
-    Under the assumption that $G$ does not have $\omega(\sqrt{n})$ labels of polynomial
-    size, there is a distance oracle with space $O(n^{3/2})$, query time
-    $O(\text{polylog}(n))$ and preprocessing time $\tilde{O}(n^{3/2})$. Furthermore, it
-    can handle labels changes in expected $O(1)$ time.
-  \end{block}
-  \begin{block}{Theorem 3}
-    \small
     There is a distance oracle that can handle edge-weight changes, edge insertions and
     deletion in amortized $O(n^{2/3}\lg^{5/3} n)$ time. It can be constructed using
     $O(n\lg n)$ space in $O(n\lg n)$ time, and answers queries in
     $\tilde{O}(\min\{\text{size}(\lambda)\cdot n^{2/3}, n\})$ time.
+  \end{block}
+  \begin{block}{Theorem 3}
+    \small
+    Under the assumption that $G$ does not have $\omega(\sqrt{n})$ labels of polynomial
+    size, there is a distance oracle with space $O(n^{3/2})$, query time
+    $O(\text{polylog}(n))$ and preprocessing time $\tilde{O}(n^{3/2})$. Furthermore, it
+    can handle labels changes in expected $O(1)$ time.
   \end{block}
 
 }
@@ -83,7 +83,7 @@
 \section{The $r$-division}
 \frame{\frametitle{The $r$-division}
 
-  dkposad
+  TODO
 
 }
 
@@ -92,16 +92,53 @@
 \section{The oracle}
 \frame{\frametitle{The oracle}
 
-  dkposad
+  TODO
 
 }
 
 % New page |||||| Second oracle
 
+\section{A dynamic vertex-labeled distance oracle}
+\frame{\frametitle{A dynamic vertex-labeled distance oracle}
+
+  \begin{block}{Theorem 2}
+    \small
+    There is a distance oracle that can handle edge-weight changes, edge insertions and
+    deletion in amortized $O(n^{2/3}\lg^{5/3} n)$ time. It can be constructed using
+    $O(n\lg n)$ space in $O(n\lg n)$ time, and answers queries in
+    $\tilde{O}(\min\{\text{size}(\lambda)\cdot n^{2/3}, n\})$ time.
+  \end{block}
+
+\begin{columns}[c]
+  \column{10cm}
+  \begin{itemize}
+    \item Built on an $r$-division.
+    \item FR-Djikstra variant.
+      \begin{itemize}
+        \item Dense distance graph.
+        \item Fast query using Djikstra and exploiting the Monge property in the DDG.
+      \end{itemize}
+    \item Henzinger's SSSP algorithm to avoid terrible worst-case times.
+  \end{itemize}
+\end{columns}
+
+}
+
+% New page
+
+\section{The oracle}
+\frame{\frametitle{The oracle}
+
+  TODO
+
+}
+
+% New page |||||| Third oracle
+
 \section{An oracle with better query times}
 \frame{\frametitle{An oracle with better query times}
 
-  \begin{block}{Theorem 2}
+  \begin{block}{Theorem 3}
     \small
     Under the assumption that $G$ does not have $\omega(\sqrt{n})$ labels of polynomial
     size, there is a distance oracle with space $O(n^{3/2})$, query time
@@ -125,6 +162,12 @@
 
 % New page
 
+\section{Conclusion and future work}
+\frame{\frametitle{Conclusion and future work}
+
+  TODO
+
+}
 
 
 
