@@ -5,7 +5,6 @@
 \usepackage[noend]{algorithmic}
 \usepackage{adjustbox}
 \usepackage{multirow}
-\usepackage{longtable}
 \usepackage{siunitx}
 \usepackage{amsmath}
 
@@ -18,14 +17,91 @@
 
 % New page
 
-\section{Motivation and Thesis Outline}
-\frame{\frametitle{Motivation and Thesis Outline}
+\section{Motivation and Problem Definition}
+\frame{\frametitle{Motivation and Problem Definition}
+\begin{columns}[c]
+  \column[b]{6cm}
+  \begin{itemize}
+    \item The \textit{distance oracle}.
+    \item Performance measures
+    \item The vertex-labeled variant.
+  \end{itemize}
+  \column{4cm}
+  \includegraphics[width=\textwidth]{figs/intro.pdf}
+\end{columns}
+
+}
+
+% New page
+
+\section{Motivation and Problem Definition}
+\frame{\frametitle{Motivation and Problem Definition}
+\begin{columns}
+  \column{6cm}
+  \textbf{The distance oracle}. \\
+  $ $ \\
+  A compact data structure that can quickly answer shortest paths between two vertices $u$ and
+  $v$.
+  \column{4cm}
+  \includegraphics[width=\textwidth]{figs/intro.pdf}
+\end{columns}
+
+}
+
+% New page
+
+\section{Motivation and Problem Definition}
+\frame{\frametitle{Motivation and Problem Definition}
+\begin{columns}[c]
+  \column{6cm}
+  \textbf{Performance measures}. \\
+  $ $ \\
+  \textit{Space}. The size of the data structure. \\
+  \textit{Query time}. The time it takes to answer shortest path queries. \\
+  \textit{Preprocessing time}. The time it takes to build the data structure. \\
+  \textit{Update time}. In the dynamic case. Time it takes to adjust the data structure
+  to reflect changes to the graph.
+  \column{4cm}
+  \includegraphics[width=\textwidth]{figs/intro.pdf}
+\end{columns}
+
+}
+
+% New page
+
+\section{Motivation and Problem Definition}
+\frame{\frametitle{Motivation and Problem Definition}
+\begin{columns}[c]
+  \column{6cm}
+  \textbf{The vertex-labeled variant}. \\
+  $ $ \\
+  Each vertex is associated with a label $\lambda$ from a set of labels $L=\{\lambda_1,
+  \dots, \lambda_\ell\}$. \\
+  Instead of answering shortest path between two vertices, we answer shortest path
+  queries,  $Q(u,\lambda)$, from a vertex $u$ to the nearest $\lambda$-labeled vertex.
+  \column{4cm}
+  \includegraphics[width=\textwidth]{figs/intro.pdf}
+\end{columns}
+
+}
+
+% New page
+
+\section{Motivation and Problem Definition}
+\frame{\frametitle{Motivation and Problem Definition}
 \begin{columns}[c]
   \column{6cm}
   \begin{itemize}
-    \item blabla
+    \item The \textit{distance oracle}.
+    \item Performance measures
+    \item The vertex-labeled variant.
   \end{itemize}
+  \noindent $ $\\
+  \textbf{This thesis}: Distance oracles in directed planar vertex-labeled graphs.
+  \column{4cm}
+  \includegraphics[width=\textwidth]{figs/intro.pdf}
 \end{columns}
+
 }
 
 % New page
