@@ -57,9 +57,12 @@
   \textbf{Performance measures}. \\
   $ $ \\
   \textit{Space}. The size of the data structure. \\
+  $ $ \\
   \textit{Query time}. The time it takes to answer shortest path queries. \\
+  $ $ \\
   \textit{Preprocessing time}. The time it takes to build the data structure. \\
-  \textit{Update time}. In the dynamic case. Time it takes to adjust the data structure
+  $ $ \\
+  \textit{Update time}. Time it takes to adjust the data structure
   to reflect changes to the graph.
   \column{4cm}
   \includegraphics[width=\textwidth]{figs/intro.pdf}
@@ -148,7 +151,7 @@
     \item Built on top of an $r$-division.
     \item Store shortest paths to all labels from \textit{boundary vertices}.
     \item Store shortest paths from all \textit{interior vertices} to all labels in the
-      same piece.
+      same piece and to all boundary vertices of the piece.
   \end{itemize}
 \end{columns}
 
@@ -159,7 +162,38 @@
 \section{The $r$-division}
 \frame{\frametitle{The $r$-division}
 
-  TODO
+  Given some $r$, an $r$-division is a collection of connected subgraphs that satisfy:
+  \begin{itemize}
+      \item Any edge belongs to one region.
+      \item There are $O(n/r)$ regions.
+      \item For each region, there are $O(\sqrt{r})$ boundary vertices.
+      \item For each region, there are $O(r)$ vertices.
+  \end{itemize}
+  \begin{center}
+  \includegraphics[scale=0.33]{figs/rdiv.pdf}
+\end{center}
+
+}
+
+% New page
+
+\section{The $r$-division}
+\frame{\frametitle{The $r$-division}
+
+  Given some $r$, an $r$-division is a collection of connected subgraphs that satisfy:
+  \begin{itemize}
+      \item Any edge belongs to one region.
+      \item There are $O(n/r)$ regions.
+      \item For each region, there are $O(\sqrt{r})$ boundary vertices.
+      \item For each region, there are $O(r)$ vertices.
+  \end{itemize}
+  There is version due to Klein, Sommer and Mozes giving a decomposition tree that further guarantees:
+  \begin{itemize}
+    \item Each piece $O(1)$ holes.
+    \item On any level of the decomposition, we have $O(\sqrt{n})$ boundary vertices in
+      total.
+    \item Can be computed in $O(n)$ time.
+  \end{itemize}
 
 }
 
@@ -167,8 +201,64 @@
 
 \section{The oracle}
 \frame{\frametitle{The oracle}
+  We store the following:
+  \begin{itemize}
+    \item Store shortest path from boundary vertices to all labels outside a region.
+    \item Store shortest path from all interior vertices to all boundary vertices of the
+      region as well as all labels inside the same
+      region.
+  \end{itemize}
+  \begin{center}
+  \includegraphics[scale=0.4]{figs/oracle1.pdf}
+\end{center}
 
-  TODO
+}
+
+% New page
+
+\section{The oracle}
+\frame{\frametitle{The oracle}
+  Given the query $Q(u,\lambda)$, find all distances $\delta(u,b)+\delta(b,\lambda)$ and
+  the distance $\delta(u,\lambda)$ stored for $u$ inside the region. Return the minimum.
+  \begin{center}
+    \includegraphics[scale=0.4]{figs/oracle1.pdf}
+  \end{center}
+
+}
+
+% New page
+
+\section{The oracle}
+\frame{\frametitle{The oracle: Analysis}
+
+  \textbf{Query}. Bounded by the number of boundary vertices, which is $O(\sqrt{r})$ \\
+  $ $ \\
+  \textbf{Space}. We have $O(n/r)$ regions, so $O(n/\sqrt{r})$ boundary vertices. For any
+  interior vertex, we store up to $O(r)$ distances, yielding $O(n\ell/\sqrt{r}+nr)$
+  space. \\
+  $ $ \\
+  \textbf{Preprocessing}. Compute SSSP from boundary vertices in $O(n)$ time. We then
+  know distances between boundary vertices, so we can compute interior distances using
+  Djikstra in $O(r\lg r)$ time. This gives us $O(n^2/\sqrt{r}+nr\lg r)$ preprocessing.
+
+}
+
+% New page
+
+\section{The oracle}
+\frame{\frametitle{The oracle: Analysis}
+
+  \textbf{Query}: $O(\sqrt{r})$ \\
+  \textbf{Space}: $O(n\ell/\sqrt{r}+nr)$ \\
+  \textbf{Preprocessing}: $O(n^2/\sqrt{r}+nr\lg r)$ \\
+  $ $ \\
+  Pick $r=\ell^{2/3}$ to get Theorem 1:
+
+  \begin{block}{Theorem 1}
+    \small
+    There is a distance oracle with space $O(n\ell^{2/3})$, query time $O(\ell^{1/3})$
+    and preprocessing time $\tilde{O}(n\ell^{2/3})$.
+  \end{block}
 
 }
 
@@ -233,6 +323,22 @@
     \item Hash tables to keep track of what vertices have what labels.
   \end{itemize}
 \end{columns}
+
+}
+
+% New page
+
+\section{Additively weighted Voronoi diagrams}
+\frame{\frametitle{Additively weighted Voronoi diagrams}
+
+  dksa \\
+  dskjadjs \\
+  dsakda \\
+  \centering
+  \includegraphics[scale=0.3]{figs/awvd1.pdf}
+  \ \ \
+  \includegraphics[scale=0.3]{figs/awvd2.pdf}
+
 
 }
 
