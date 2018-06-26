@@ -187,11 +187,10 @@
       \item For each region, there are $O(\sqrt{r})$ boundary vertices.
       \item For each region, there are $O(r)$ vertices.
   \end{itemize}
-  There is version due to Klein, Sommer and Mozes giving a decomposition tree that further guarantees:
+  There is version due to Klein, Sommer and Mozes that further guarantees:
   \begin{itemize}
-    \item Each piece $O(1)$ holes.
-    \item On any level of the decomposition, we have $O(\sqrt{n})$ boundary vertices in
-      total.
+    \item Each region is a connected subgraph.
+    \item Each region has $O(1)$ holes.
     \item Can be computed in $O(n)$ time.
   \end{itemize}
 
@@ -321,7 +320,7 @@
     \item Djikstra variant on boundary vertices in $O(n/\sqrt{r}\lg^2 n)$ time.
     \item Compute shortest path to $v$ in $P_v$ in $O(r)$ time.
     \item If same piece, check if this distance is smaller. For $Q(u,\lambda)$, total
-      query time is $O(\text{size}(\lambda)\cdot r+n/\sqrt{r}\lg^2)$.
+      query time is $\tilde{O}(\text{size}(\lambda)\cdot r+n/\sqrt{r})$.
   \end{itemize}
   \centering
   \includegraphics[scale=0.4]{figs/ddgQ.pdf}
@@ -335,7 +334,7 @@
   \small
   Only update $r$-division and DDG after an order of $\sqrt{r}$ of update operations have been performed.
   \begin{itemize}
-    \item Edge weight changes straightforward.
+    \item Edge weight changes, change weight and recompute DDG in $O(r\lg r)$ time.
     \item To delete and edge, we need to recompute the DDG of that piece in $O(r\lg r)$
       time.
     \item If an edge insertion is entirely within a piece, simply add it. Otherwise, we
@@ -386,7 +385,7 @@
 \begin{columns}[c]
   \column{10cm}
   \begin{itemize}
-    \item Built on top of an $r$-division.
+    \item Built on a recursive decomposition of $G$ using Jordan curves.
     \item Store all shortest paths to and from boundary vertices.
     \item Store \textit{additiviely weighted Voronoi diagrams} for all vertices $u$ and
       a constant number of holes $h$.
@@ -455,8 +454,8 @@
 \section{The oracle}
 \frame{\frametitle{The oracle}
 
-  The oracle is built on top of an $r$-division, where we store additively weighted
-  Voronoi diagrams to allow point to point location in $O(\lg n)$ time. For labels that
+  The additively weighted
+  Voronoi diagrams allow point to point location in $O(\lg n)$ time. For labels that
   are polynomial in size, we store shortest paths directly.
   \begin{itemize}
     \item Check size of label. If it is polynomial, lookup distance in $O(1)$ time.
@@ -496,7 +495,7 @@
   $ $ \\
   \textbf{Query}: For labels of polynomial size, this takes $O(1)$ time. Otherwise, we
   descend into the decomposition tree of depth $O(\lg n)$ followed by $O(1)$ queries
-  to the point location structure taking $O(\sqrt{r})$ time. Since we do this at most $O(\text{polylog}(n))$
+  to the point location structure taking $O(\lg n)$ time. Since we do this at most $O(\text{polylog}(n))$
   times, this dominates the query time.
 
 }
@@ -508,8 +507,8 @@
   in $O(n^{3/2})$ time. For labels of polynomial size (of which there at most
   $O(\sqrt{n})$ of), we can compute the shortest paths in $\tilde{O}(n^{3/2})$ time.
   All distances for the additively weighted Voronoi diagrams are already computed, so we
-  can construct these in $O(r)$ time and extend them in $O(\sqrt{r})$ time to support
-  point location. There are $O(n)$ of these, for a total of $O(nr)$. Total time spent is
+  can construct these in $O(|P|)$ time and extend them in $O(\sqrt{|P|})$ time to support
+  point location. There are $O(n)$ of these, for a total of $O(n|P|)$. Total time spent is
   $\tilde{O}(n^{3/2})$. \\
   $ $ \\
   \textbf{Update}: Under the assumption that label sizes do not become polynomial, we
@@ -549,7 +548,7 @@
     \item Exact distance oracles for Vertex-labeled planar graphs is unexplored.
     \item The goal was to match trade-offs given for regular distance oracles.
     \item A result based on $\ell$ providing us with trade-off for space-query.
-    \item A result based on FR-djikstra to show we can handle edge modifications For this
+    \item A result based on FR-Djikstra to show we can handle edge modifications For this
       type of graph
     \item A result which almost matches the best results for non vertex-labeled graphs,
       and works for most graphs.
