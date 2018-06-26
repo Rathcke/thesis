@@ -115,7 +115,7 @@
   \begin{block}{Theorem 1}
     \small
     There is a distance oracle with space $O(n\ell^{2/3})$, query time $O(\ell^{1/3})$
-    and preprocessing time $\tilde{O}(n\ell^{2/3})$.
+    and preprocessing time \textcolor{red}{$\tilde{O}(n\ell^{2/3})$}.
   \end{block}
   \begin{block}{Theorem 2}
     \small
@@ -128,7 +128,7 @@
     \small
     Under the assumption that $G$ does not have $\omega(\sqrt{n})$ labels of polynomial
     size, there is a distance oracle with space $O(n^{3/2})$, query time
-    $O(\text{polylog}(n))$ and preprocessing time $\tilde{O}(n^{3/2})$. Furthermore, it
+    $O(\text{polylog}(n))$ and preprocessing time \textcolor{red}{$\tilde{O}(n^{3/2})$}. Furthermore, it
     can handle labels changes in expected $O(1)$ time.
   \end{block}
 
@@ -256,7 +256,7 @@
   \begin{block}{Theorem 1}
     \small
     There is a distance oracle with space $O(n\ell^{2/3})$, query time $O(\ell^{1/3})$
-    and preprocessing time $\tilde{O}(n\ell^{2/3})$.
+    and preprocessing time \textcolor{red}{$\tilde{O}(n\ell^{2/3})$}.
   \end{block}
 
 }
@@ -509,7 +509,7 @@
   All distances for the additively weighted Voronoi diagrams are already computed, so we
   can construct these in $O(|P|)$ time and extend them in $O(\sqrt{|P|})$ time to support
   point location. There are $O(n)$ of these, for a total of $O(n|P|)$. Total time spent is
-  $\tilde{O}(n^{3/2})$. \\
+  $O(n^{2})$. \\
   $ $ \\
   \textbf{Update}: Under the assumption that label sizes do not become polynomial, we
   have the load factor $\alpha$ is less than one, which means we can expect amortized
@@ -524,7 +524,7 @@
   \small
   \textbf{Space}: $O(n^{3/2})$ \\
   \textbf{Query}: $O(\text{polylog}(n))$ \\
-  \textbf{Preprocessing}: $\tilde{O}(n^{3/2})$ \\
+  \textbf{Preprocessing}: $\tilde{O}(n^{3/2})$\\
   \textbf{Update}: $O(1)$. \\
   $ $ \\
   This gives us our main Theorem:
@@ -533,7 +533,7 @@
     \small
     Under the assumption that $G$ does not have $\omega(\sqrt{n})$ labels of polynomial
     size, there is a distance oracle with space $O(n^{3/2})$, query time
-    $O(\text{polylog}(n))$ and preprocessing time $\tilde{O}(n^{3/2})$. Furthermore, it
+    $O(\text{polylog}(n))$ and preprocessing time \textcolor{red}{$\tilde{O}(n^{3/2})$}. Furthermore, it
     can handle labels changes in expected $O(1)$ time.
   \end{block}
 
