@@ -43,7 +43,7 @@
   A compact data structure that can quickly answer shortest paths between two vertices $u$ and
   $v$.
   \column{4cm}
-  \includegraphics[width=\textwidth]{figs/intro.pdf}
+  \includegraphics[width=\textwidth]{figs/intro2.pdf}
 \end{columns}
 
 }
@@ -83,7 +83,7 @@
   Instead of answering shortest path between two vertices, we answer shortest path
   queries,  $Q(u,\lambda)$, from a vertex $u$ to the nearest $\lambda$-labeled vertex.
   \column{4cm}
-  \includegraphics[width=\textwidth]{figs/intro.pdf}
+  \includegraphics[width=\textwidth]{figs/intro3.pdf}
 \end{columns}
 
 }
@@ -102,7 +102,7 @@
   \noindent $ $\\
   \textbf{This thesis}: Distance oracles in directed planar vertex-labeled graphs.
   \column{4cm}
-  \includegraphics[width=\textwidth]{figs/intro.pdf}
+  \includegraphics[width=\textwidth]{figs/intro4.pdf}
 \end{columns}
 
 }
@@ -120,7 +120,7 @@
   \begin{block}{Theorem 2}
     \small
     There is a distance oracle that can handle edge-weight changes, edge insertions and
-    deletion in amortized $O(n^{2/3}\lg^{5/3} n)$ time. It can be constructed using
+    deletion in amortized $\tilde{O}(n^{2/3})$ time. It can be constructed using
     $O(n\lg n)$ space in $O(n\lg n)$ time, and answers queries in
     $\tilde{O}(\min\{\text{size}(\lambda)\cdot n^{2/3}, n\})$ time.
   \end{block}
@@ -203,7 +203,7 @@
 \frame{\frametitle{The oracle}
   We store the following:
   \begin{itemize}
-    \item Store shortest path from boundary vertices to all labels outside a region.
+    \item Store shortest path from boundary vertices to all labels.
     \item Store shortest path from all interior vertices to all boundary vertices of the
       region as well as all labels inside the same
       region.
@@ -292,20 +292,81 @@
 
 % New page
 
-\section{FR-Djikstra}
+\section{The oracle}
 \frame{\frametitle{The Dense Distance Graph}
 
-  The dense distance graph (DDG) is the graph where there is an edge between
-  boundary vertices of the same piece $P$ with weight equal to the shortest path in $P$.
+  \begin{columns}
+    \column{10cm}
+    \begin{itemize}
+      \item The complete graph on boundary vertices for each piece.
+      \item Can be constructed in $O(n\lg r)$ time and $O(r\lg r)$ for a single region.
+    \end{itemize}
+  \end{columns}
+  \noindent \\
+  $ $ \\
+  $ $ \\
+  \centering
+  \includegraphics[scale=0.4]{figs/ddg.pdf}
 
 }
 
 % New page
 
-\section{The oracle}
-\frame{\frametitle{The oracle}
+\frame{\frametitle{The query}
 
-  TODO
+  \small
+  For query $Q(u,v)$, we do the following:
+  \begin{itemize}
+    \item Compute shortest path to boundary vertices from $u$ in $P_u$.
+    \item Djikstra variant on boundary vertices in $O(n/\sqrt{r}\lg^2 n)$ time.
+    \item Compute shortest path to $v$ in $P_v$ in $O(r)$ time.
+    \item If same piece, check if this distance is smaller. For $Q(u,\lambda)$, total
+      query time is $O(\text{size}(\lambda)\cdot r+n/\sqrt{r}\lg^2)$.
+  \end{itemize}
+  \centering
+  \includegraphics[scale=0.4]{figs/ddgQ.pdf}
+
+}
+
+% New page
+
+\frame{\frametitle{Updates}
+
+  \small
+  Only update $r$-division and DDG after an order of $\sqrt{r}$ of update operations have been performed.
+  \begin{itemize}
+    \item Edge weight changes straightforward.
+    \item To delete and edge, we need to recompute the DDG of that piece in $O(r\lg r)$
+      time.
+    \item If an edge insertion is entirely within a piece, simply add it. Otherwise, we
+      add another boundary vertex. Recompute DDG in $O(r\lg r)$ time.
+  \end{itemize}
+  \small
+  We recompute an $r$-division and DDG after $\sqrt{r}$ operations, so an amortized
+  analysis over all operations gives us $O(\frac{n+n\lg r}{\sqrt{r}}+r\lg r)=O(n\lg
+  r/\sqrt{r}+r\lg r)$
+    time per operation. \\
+
+}
+
+% New page
+
+\frame{\frametitle{Theorem 2}
+
+  \textbf{Space}: $O(n\lg n)$ \\
+  \textbf{Preprocessing}: $O(n\lg n)$ \\
+  \textbf{Query}: $\tilde{O}(\text{size}(\lambda)\cdot r + n/\sqrt{r})$ \\
+  \textbf{Update}: $O(n\lg r/\sqrt{r}+r\lg r)$ \\
+  $ $ \\
+  Pick $r=n^{2/3}$ to get Theorem 2:
+
+  \begin{block}{Theorem 2}
+    \small
+    There is a distance oracle that can handle edge-weight changes, edge insertions and
+    deletion in amortized $\tilde{O}(n^{2/3})$ time. It can be constructed using
+    $O(n\lg n)$ space in $O(n\lg n)$ time, and answers queries in
+    $\tilde{O}(\min\{\text{size}(\lambda)\cdot n^{2/3}, n\})$ time.
+  \end{block}
 
 }
 
@@ -341,14 +402,141 @@
 \section{Additively weighted Voronoi diagrams}
 \frame{\frametitle{Additively weighted Voronoi diagrams}
 
-  dksa \\
-  dskjadjs \\
-  dsakda \\
-  \centering
+  \begin{columns}
+    \column{6cm}
+  \small
+  When we separate a piece into two pieces $P$ and $Q$, a diagram is defined for a vertex
+  $u\in P$ and hole $h$ of $Q$.
+  \begin{itemize}
+    \item \small Boundary vertices incident to $h$ are sites of the Voronoi diagram.
+    \item \small A shortest path from $u$ to an interior vertex $v$ of $h$, will go through the site
+      whose cell $v$ belongs to.
+    \item \small We're after the representation, $VD^*$, which is a tree that requires $O(\sqrt{r})$ space.
+  \end{itemize}
+    \column{4cm}
   \includegraphics[scale=0.3]{figs/awvd1.pdf}
-  \ \ \
+  $ $ \\
+  $ $ \\
   \includegraphics[scale=0.3]{figs/awvd2.pdf}
+  \end{columns}
 
+}
+
+% New page
+
+\frame{\frametitle{Point location}
+
+  \begin{columns}
+    \column{6.5cm}
+  The stored information:
+  \begin{itemize}
+    \item \small We have stored shortest path trees from all boundary vertices.
+    \item \small For vertices of $VD^*$, we store the distance from the three adjacent
+      sites.
+    \item \small The centroid decomposition of $VD^*$.
+  \end{itemize}
+  For the query $Q(u,v)$:
+  \begin{itemize}
+    \item \small Travel $VD^*$, compare distance from $u$ to $v$ for the three adjacent sites to
+      $v^*$.
+    \item \small Say site $s$ is closest, we can travel two edges. Locate $v$ relative to the
+      shortest path from $s$ to $v^*$ and travel down the corresponding edge of $VD^*$.
+  \end{itemize}
+    \column{3.5cm}
+  \includegraphics[width=\textwidth]{figs/vd2.pdf}
+  $ $ \\
+  \includegraphics[width=\textwidth]{figs/vd1.pdf}
+  \end{columns}
+
+}
+
+% New page
+
+\section{The oracle}
+\frame{\frametitle{The oracle}
+
+  The oracle is built on top of an $r$-division, where we store additively weighted
+  Voronoi diagrams to allow point to point location in $O(\lg n)$ time. For labels that
+  are polynomial in size, we store shortest paths directly.
+  \begin{itemize}
+    \item Check size of label. If it is polynomial, lookup distance in $O(1)$ time.
+    \item If not, we make $\text{size}(\lambda)$ point to point queries.
+    \item Travel decomposition tree. If either $u$ or $v$ is part of a separator, we can
+      lookup the distance. If they belong to the same piece, we descend into that piece.
+      If they belong to different pieces, we make point locations point locations in the
+      additively weighted Voronoi diagrams stored for $u$.
+  \end{itemize}
+
+}
+
+% New page
+
+\frame{\frametitle{Handling label changes}
+
+  We can extend the oracle to handle label changes in expected amortized $O(1)$ time.
+
+  \begin{itemize}
+    \item Add a hash table that keeps track of labels on vertices.
+    \item A dynamic version of the hash table that return all vertices given a label.
+      $\lambda$.
+  \end{itemize}
+
+}
+
+% New page
+
+\frame{\frametitle{The oracle: Analysis}
+
+  \small
+  \textbf{Space}: We store shortest path to and from boundary vertices requiring
+  $O(n^{3/2})$ space. Each of the $O(1)$ additiviely weighted Voronoi diagram stored for
+  a vertex $u$ requires worst case $O(\sqrt{n})$ space, totalling $O(n^{3/2})$. For
+  labels of polynomial size, we use $O(n^{3/2})$ space under the simplifying assumption.
+  \\
+  $ $ \\
+  \textbf{Query}: For labels of polynomial size, this takes $O(1)$ time. Otherwise, we
+  descend into the decomposition tree of depth $O(\lg n)$ followed by $O(1)$ queries
+  to the point location structure taking $O(\sqrt{r})$ time. Since we do this at most $O(\text{polylog}(n))$
+  times, this dominates the query time.
+
+}
+
+\frame{\frametitle{The oracle: Analysis}
+
+  \small
+  \textbf{Preprocessing}: The shortest path trees for boundary vertices can be computed
+  in $O(n^{3/2})$ time. For labels of polynomial size (of which there at most
+  $O(\sqrt{n})$ of), we can compute the shortest paths in $\tilde{O}(n^{3/2})$ time.
+  All distances for the additively weighted Voronoi diagrams are already computed, so we
+  can construct these in $O(r)$ time and extend them in $O(\sqrt{r})$ time to support
+  point location. There are $O(n)$ of these, for a total of $O(nr)$. Total time spent is
+  $\tilde{O}(n^{3/2})$. \\
+  $ $ \\
+  \textbf{Update}: Under the assumption that label sizes do not become polynomial, we
+  have the load factor $\alpha$ is less than one, which means we can expect amortized
+  $O(1)$ time for updates. Space is linear.
+
+}
+
+% New page
+
+\frame{\frametitle{Putting it together}
+
+  \small
+  \textbf{Space}: $O(n^{3/2})$ \\
+  \textbf{Query}: $O(\text{polylog}(n))$ \\
+  \textbf{Preprocessing}: $\tilde{O}(n^{3/2})$ \\
+  \textbf{Update}: $O(1)$. \\
+  $ $ \\
+  This gives us our main Theorem:
+
+  \begin{block}{Theorem 3}
+    \small
+    Under the assumption that $G$ does not have $\omega(\sqrt{n})$ labels of polynomial
+    size, there is a distance oracle with space $O(n^{3/2})$, query time
+    $O(\text{polylog}(n))$ and preprocessing time $\tilde{O}(n^{3/2})$. Furthermore, it
+    can handle labels changes in expected $O(1)$ time.
+  \end{block}
 
 }
 
@@ -357,7 +545,28 @@
 \section{Conclusion and future work}
 \frame{\frametitle{Conclusion and future work}
 
-  TODO
+  \begin{itemize}
+    \item Exact distance oracles for Vertex-labeled planar graphs is unexplored.
+    \item The goal was to match trade-offs given for regular distance oracles.
+    \item A result based on $\ell$ providing us with trade-off for space-query.
+    \item A result based on FR-djikstra to show we can handle edge modifications For this
+      type of graph
+    \item A result which almost matches the best results for non vertex-labeled graphs,
+      and works for most graphs.
+    \item Removing the assumption.
+    \item Extend to other classes of graphs.
+  \end{itemize}
+
+}
+
+% New page
+
+\frame{\frametitle{The end}
+
+  Thanks to Christian Wulff-Nilsen for supervising the project. \\
+  $ $ \\
+  \centering
+  \Huge Questions?
 
 }
 
